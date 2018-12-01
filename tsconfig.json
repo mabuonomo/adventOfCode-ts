@@ -2,7 +2,7 @@
   "compilerOptions": {
     "declaration": false,
     "noEmit": true,
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "strict": true,

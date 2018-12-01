@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as rd from 'readline'
+import { element } from 'prop-types';
 
 var reader = rd.createInterface(fs.createReadStream("input1_2.txt"))
 
@@ -24,15 +25,18 @@ reader.on("close", () => {
 
 function readNumbers(value: number, frequency: Array<number>): number {
     var result = null;
-    data.forEach(element => {
+
+    for (let i = 0; i < data.length; i++) {
+        let element = data[i];
         value += element.number;
-        frequency.push(value);
 
         if (frequency.indexOf(value) >= 0) {
-            result = value;
+            return value;
         }
-    });
-    
+
+        frequency.push(value);
+    };
+
     if (result == null) {
         result = readNumbers(value, frequency);
     }
