@@ -5,7 +5,7 @@
   "scripts": {
     "test": "typings-checker --allow-expect-error",
     "test-all": "npm test -- solutions/**/*.ts",
-    "fix-prettier": "prettier --write \"./{src,solutions,chapters}/**/*.ts\""
+    "fix-prettier": "prettier --write \"./{src}/**/*.ts\""
   },
   "keywords": [],
   "author": "",

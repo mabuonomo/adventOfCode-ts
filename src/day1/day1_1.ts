@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as rd from 'readline'
 
-var reader = rd.createInterface(fs.createReadStream("input.txt"))
+var reader = rd.createInterface(fs.createReadStream("input1_1.txt"))
 
 var data: Array<{ number: number; }> = [];
 reader.on("line", (l: string) => {
@@ -13,7 +13,6 @@ reader.on("line", (l: string) => {
 })
 
 reader.on("close", () => {
-    console.log(`Data has been read ${data.length}`);
     var value = 0;
     data.forEach(element => {
         value += element.number;
