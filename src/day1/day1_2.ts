@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as rd from 'readline'
-import { element } from 'prop-types';
 
 var reader = rd.createInterface(fs.createReadStream("./src/day1/input.txt"))
 
