@@ -18,7 +18,7 @@ reader.on("close", () => {
     var occ_3 = 0;
 
     data.forEach(hash => {
-        let occurency: [number, number] = redOccurrency(hash.value);
+        let occurency: [number, number] = readOccurrency(hash.value);
 
         occ_2 += occurency[0];
         occ_3 += occurency[1];
@@ -29,7 +29,7 @@ reader.on("close", () => {
     console.log("Result: " + (occ_2 * occ_3));
 })
 
-function redOccurrency(hash: string): [number, number] {
+function readOccurrency(hash: string): [number, number] {
     let occ_2 = 0;
     let occ_3 = 0;
 
