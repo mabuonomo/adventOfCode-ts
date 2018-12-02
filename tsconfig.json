@@ -16,8 +16,6 @@
     "jsx": "react"
   },
   "include": [
-    "./src/**/*",
-    "./chapters/**/*",
-    "./solutions/**/*"
+    "./src/**/*"
   ]
 }
