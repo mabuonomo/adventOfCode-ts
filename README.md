@@ -1,11 +1,18 @@
-Advent of Code 2018
+Advent of Code 2018 - TS
 ===================
 
-Solutions in typescript language.
+The solutions are in typescript language.
 
-# Steps 
 ## Build
+```bash
 docker-compose build
+```
 
 ## Run
-docker-compose run app ts-node src/day1/day1_2.ts
+```bash
+docker-compose run app ts-node src/{day}/{part}.ts
+```
+Example
+```bash
+docker-compose run app ts-node src/day1/day1_1.ts
+```
