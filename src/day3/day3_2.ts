@@ -46,11 +46,16 @@ reader.on("close", () => {
             for (let j = square.top; j < square.top + square.h; j++) {
                 if (matrix[i][j] > 1) {
                     overlap = true;
+                    break;
                 }
+            }
+
+            if (overlap) {
+                break;
             }
         }
 
-        if(!overlap) {
+        if (!overlap) {
             id = square.id;
         }
     });
