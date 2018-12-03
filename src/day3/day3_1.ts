@@ -4,7 +4,7 @@ import * as rd from 'readline'
 var reader = rd.createInterface(fs.createReadStream("./src/day3/input.txt"))
 
 var data: Array<{ id: string, left: number, top: number, w: number, h: number }> = [];
-var matrix: Array<Array<string>> = [];
+var matrix: Array<Array<number>> = [];
 
 // #1 @ 53,238: 26x24
 reader.on("line", (l: string) => {
@@ -22,42 +22,31 @@ reader.on("line", (l: string) => {
 })
 
 reader.on("close", () => {
-    console.log('Input size: ' + data.length);
-
-    let overlap = 0;
-    let overlapFull = 0;
-
-    let countId = 0;
-
     data.forEach(square => {
-
-        let idFinds: Array<string> = [];
-
         for (let i = square.left; i < square.left + square.w; i++) {
             for (let j = square.top; j < square.top + square.h; j++) {
                 if (matrix[i] === undefined) {
                     matrix[i] = [];
                 }
 
-                if (matrix[i][j] !== undefined && idFinds.indexOf(matrix[i][j]) === -1) {
-                    idFinds.push(matrix[i][j]);
-                }
-
-                if (matrix[i][j] !== undefined) {
-                    overlapFull++;
+                if (matrix[i][j] === undefined) {
+                    matrix[i][j] = 1;
                 } else {
-                    matrix[i][j] = square.id;
-                    countId++;
+                    matrix[i][j]++;
                 }
             }
         }
-
-        overlap += idFinds.length;
     });
 
+    let counter = 0;
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix[i].length; j++) {
+            if (matrix[i][j] > 1) {
+                counter++;
+            }
+        }
+    }
+
     // 118322 // part2 1178
-    console.log('Result: ' + overlap);
-    console.log('Result full: ' + overlapFull);
-    console.log('Result Id: ' + countId);
-    console.log('Diff ' + (countId - overlapFull));
+    console.log('Result ' + counter);
 })
