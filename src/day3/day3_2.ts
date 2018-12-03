@@ -22,6 +22,7 @@ reader.on("line", (l: string) => {
 })
 
 reader.on("close", () => {
+
     data.forEach(square => {
         for (let i = square.left; i < square.left + square.w; i++) {
             for (let j = square.top; j < square.top + square.h; j++) {
@@ -38,14 +39,21 @@ reader.on("close", () => {
         }
     });
 
-    let counter = 0;
-    for (let i = 0; i < matrix.length; i++) {
-        for (let j = 0; j < matrix[i].length; j++) {
-            if (matrix[i][j] > 1) {
-                counter++;
+    let id = '';
+    data.forEach(square => {
+        let overlap = false;
+        for (let i = square.left; i < square.left + square.w; i++) {
+            for (let j = square.top; j < square.top + square.h; j++) {
+                if (matrix[i][j] > 1) {
+                    overlap = true;
+                }
             }
         }
-    }
 
-    console.log('Result ' + counter);
+        if(!overlap) {
+            id = square.id;
+        }
+    });
+
+    console.log('Result ' + id);
 })
