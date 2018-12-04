@@ -31,7 +31,6 @@ reader.on("close", () => {
         let elem = array[i];
         if (isGuard(elem.line)) {
             let idGuard = getIdGuard(elem.line);
-            // console.log(idGuard);
 
             for (let j = i + 1; j < array.length; j++) {
                 let nextLine = array[j];
@@ -48,6 +47,7 @@ reader.on("close", () => {
                         matrix[idGuard] = [];
                     }
 
+                    // fill
                     for (let start = minStart; start < minStop; start++) {
                         if (matrix[idGuard][start] === undefined) {
                             matrix[idGuard][start] = 1;
@@ -63,11 +63,12 @@ reader.on("close", () => {
         }
     }
 
+
     let idGuard = -1;
     let maxCounter = 0;
     Object.keys(matrix).forEach(key => {
         let counter = 0;
-        for (let j = 0; j < 60; j++) {
+        for (let j = 0; j <= 59; j++) {
             if (matrix[parseInt(key)][j] != undefined) {
                 counter++;
             }
@@ -78,11 +79,11 @@ reader.on("close", () => {
             }
         }
     });
-    console.log('Max guard:' + idGuard + " " + maxCounter);
+    console.log('Max minute asleep guard:' + idGuard + " " + maxCounter);
 
     let maxOverlap = 0;
     let minute = -1;
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i <= 59; i++) {
         if (matrix[idGuard][i] > maxOverlap) {
             maxOverlap = matrix[idGuard][i];
             minute = i;
