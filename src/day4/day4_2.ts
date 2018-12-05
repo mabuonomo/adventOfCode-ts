@@ -72,7 +72,7 @@ reader.on("close", () => {
         let counter = 0;
         for (let j = 0; j <= 59; j++) {
             if (matrix[parseInt(key)][j] != undefined) {
-                counter += matrix[parseInt(key)][j];
+                counter = matrix[parseInt(key)][j];
             }
 
             if (counter > maxCounter) {
