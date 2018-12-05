@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "declaration": false,
     "noEmit": true,
     "target": "es2015",
     "module": "commonjs",
@@ -9,6 +8,7 @@
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "noUnusedLocals": false,
+    "declaration": true,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
