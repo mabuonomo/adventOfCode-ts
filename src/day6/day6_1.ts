@@ -44,28 +44,38 @@ reader.on("close", () => {
         }
     });
 
-    console.log(matrix);
+    // console.log(matrix);
 
     let counter = 0;
     let geoMax: Geo = { x: 0, y: 0, name: 0 };
     array.forEach(geo => {
         let occ = 0;
+        let isBound = false;
         for (let x = 0; x < getSize(array); x++) {
             for (let y = 0; y < getSize(array); y++) {
                 if (matrix[x][y].geo.name === geo.name) {
                     occ++;
+
+                    if (x == 0 || y == 0 || x == getSize(array) - 1 || y == getSize(array) - 1) {
+                        isBound = true;
+                        break;
+                    }
                 }
+            }
+
+            if (isBound) {
+                break;
             }
         }
 
-        if (occ > counter) {
+        if (!isBound && occ > counter) {
             counter = occ;
             geoMax = geo;
         }
     });
 
-    console.log('Result ' + geoMax.x + ' ' + geoMax.y);
-    console.log('Occ: ' + counter);
+    console.log('Geo ' + geoMax.x + ' ' + geoMax.y);
+    console.log('Result: ' + counter);
 })
 
 function manhattanDistance(point1: Geo, point2: Geo) {
