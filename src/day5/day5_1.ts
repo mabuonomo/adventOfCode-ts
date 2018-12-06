@@ -8,16 +8,18 @@ var line: string;
 reader.on("line", (l: string) => {
     line = l;
     // console.log(line.length);
-    
+
 })
 
 
 reader.on("close", () => {
     let result = cleanString(line, 0);
-    console.log(line);
+    console.log('Result: ' + result.length);
 })
 
-function cleanString(line: string, i: number) {
+function cleanString(line: string, i: number): string {
+
+    // console.log('Elab: ' + line);
 
     if (i == -1) {
         i = 0;
@@ -33,19 +35,14 @@ function cleanString(line: string, i: number) {
 
     // console.log("Check: " + i + " " + actual + " " + next);
     if (checkSimilar(actual, next) && checkReact(actual, next)) {
-        // console.log(actual + " " + next);
+        console.log('**React: ' + actual + " " + next);
         line = removeIndex(i, line);
-        // console.log("New: " + line);
         i--;
     } else {
         i++;
-        // console.log("Elab: " + line);
     }
 
-    line = cleanString(line, i);
-    // console.log("Elab: " + line.length);
-
-    return line;
+    return cleanString(line, i);
 }
 
 function removeIndex(index: number, line: string) {
