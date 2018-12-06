@@ -7,21 +7,29 @@ var line: string;
 
 reader.on("line", (l: string) => {
     line = l;
-    // console.log(line.length);
 
 })
 
 
 reader.on("close", () => {
-    let result = cleanString(line, 0);
-    console.log('Result: ' + result.length);
+
+    let splits = splitLint(line, 2);
+
+    let final = '';
+    splits.forEach(split => {
+
+        let index = final.length - 2;
+        final += split;
+        final = cleanString(final, index);
+    });
+
+    console.log('String: ' + final);
+    console.log('Result: ' + final.length);
 })
 
 function cleanString(line: string, i: number): string {
 
-    // console.log('Elab: ' + line);
-
-    if (i == -1) {
+    if (i <= -1) {
         i = 0;
     }
 
@@ -35,7 +43,7 @@ function cleanString(line: string, i: number): string {
 
     // console.log("Check: " + i + " " + actual + " " + next);
     if (checkSimilar(actual, next) && checkReact(actual, next)) {
-        console.log('**React: ' + actual + " " + next);
+        // console.log('**React: ' + actual + " " + next);
         line = removeIndex(i, line);
         i--;
     } else {
@@ -43,6 +51,12 @@ function cleanString(line: string, i: number): string {
     }
 
     return cleanString(line, i);
+}
+
+function splitLint(line: string, size: number): string[] {
+
+    var re = new RegExp('.{1,' + size + '}', 'g');
+    return line.match(re) as string[];
 }
 
 function removeIndex(index: number, line: string) {
