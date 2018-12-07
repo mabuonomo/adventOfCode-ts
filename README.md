@@ -2,7 +2,7 @@ Advent of Code 2018 - TS
 ===================
 
 The solutions are in typescript language.
-Stages 6/25
+Stages 7/25
 
 ## Build
 ```bash
