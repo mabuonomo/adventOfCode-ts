@@ -15,50 +15,17 @@ reader.on("line", (l: string) => {
 
 
 reader.on("close", () => {
-    console.log(array);
+    getStart(array);
 
-    array.sort((one: Geo, two: Geo) => (one.in != two.out ? -1 : 1));
-
-    // console.log(array);
-    let steps = array.length;
-    let starts = getStart(array);
-
-    // console.log(starts);
-    // console.log(array);
-    // let result = getNext(starts, array);
-    // console.log('Result ' + result);
+    console.log('***Result');
+    console.log(visited);
+    console.log(buildResult())
 })
 
-// function getNext(start: Array<Geo>, array: Array<Geo>): string {
-//     let result = '';
-//     let geo: Array<Geo> = [];
+let unlocked: Array<Geo> = [];
+let visited: Array<Geo | undefined> = [];
 
-//     if (start.length == 0) {
-//         return result;
-//     }
-
-//     start.forEach(element => {
-//         result += element.in;
-
-//         array.forEach(test => {
-//             if (element.in !== test.in && element.out === test.in) {
-//                 geo.push(test);
-//             }
-//         });
-//     });
-
-//     geo.sort((one: Geo, two: Geo) => (one.out < two.out ? -1 : 1));
-//     geo.forEach(internal => {
-//         result += internal.in;
-//     });
-
-//     console.log('**next result ' + result);
-//     console.log(geo);
-//     return getNext(geo, array);
-// }
-
-// let visited
-function getStart(array: Array<Geo>): Geo | undefined {
+function getStart(array: Array<Geo>): void {
     let geo: Array<Geo> = [];
     let result = '';
 
@@ -74,26 +41,58 @@ function getStart(array: Array<Geo>): Geo | undefined {
             if (!find) {
                 // elem.visited = true;
                 geo.push(elem);
+                unlocked.push(elem);
             }
         }
     });
 
     geo.sort((one: Geo, two: Geo) => (one.out < two.out ? -1 : 1));
 
-    // console.log("start");
-    // console.log(geo);
     if (geo.length > 0) {
-        geo[0].visited = true;
-        result += geo[0].in;
+        visited.push(geo[0]);
+        walk();
+    }
+}
 
-        console.log('***');
-        console.log('**' + geo[0].in + " " + geo[0].out)
-        // console.log(geo[0]);
-        console.log(array);
-        // console.log(result);
-        return getStart(array);
-        // return geo[0];
+function walk(): void {
+    console.log('***');
+    console.log(unlocked);
+
+    unlocked.sort((one: Geo, two: Geo) => (one.out < two.out ? -1 : 1));
+
+    if (unlocked.length == 0) {
+        return;
     }
 
-    return undefined;
+    let unl = unlocked.shift();
+
+    if (!visited.find((one: Geo | undefined) => one !== undefined && unl !== undefined && one.in == unl.in)) {
+        visited.push(unl);
+    }
+
+    array.forEach(element => {
+        if (unl !== undefined) {
+            if (element.in == unl.out && !unlocked.find((one: Geo) => unl !== undefined && one.out == unl.out)) {
+                unlocked.push(element);
+            }
+        }
+    });
+
+    return walk();
+}
+
+function buildResult(): string {
+    let result = '';
+    visited.forEach(element => {
+        if (element != undefined) {
+            result += element.in;
+        }
+    });
+
+    let last = visited.pop();
+    if (last !== undefined) {
+        result += last.out;
+    }
+
+    return result;
 }
