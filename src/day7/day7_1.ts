@@ -1,25 +1,31 @@
 import * as fs from 'fs';
 import * as rd from 'readline'
 
-var reader = rd.createInterface(fs.createReadStream("./src/day7/test.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day7/input.txt"))
 
-type Geo = { in: string, out: string, visited: boolean };
+type Geo = { in: string, out: string };
 let array: Array<Geo> = [];
 
 reader.on("line", (l: string) => {
     var tokens = l.split(' ');
 
-    let geo: Geo = { in: tokens[1], out: tokens[7], visited: false };
+    let geo: Geo = { in: tokens[1], out: tokens[7] };
     array.push(geo);
 });
 
 
 reader.on("close", () => {
+    let start = new Date().getTime();
     getStart(array);
 
     console.log('***Result');
     console.log(visited);
-    console.log(buildResult())
+
+    let result = buildResult();
+    console.log(result);
+
+    console.log('Length: ' + result.length + " " + visited.length);
+    console.log('Timing: ' + (new Date().getTime() - start));
 })
 
 let unlocked: Array<Geo> = [];
@@ -30,19 +36,16 @@ function getStart(array: Array<Geo>): void {
     let result = '';
 
     array.forEach(elem => {
-        if (!elem.visited) {
-            let find = false;
-            array.forEach(test => {
-                if (!test.visited && test.in !== elem.in && elem.in === test.out) {
-                    find = true;
-                }
-            });
-
-            if (!find) {
-                // elem.visited = true;
-                geo.push(elem);
-                unlocked.push(elem);
+        let find = false;
+        array.forEach(test => {
+            if (test.in !== elem.in && elem.in === test.out) {
+                find = true;
             }
+        });
+
+        if (!find) {
+            geo.push(elem);
+            unlocked.push(elem);
         }
     });
 
@@ -55,7 +58,7 @@ function getStart(array: Array<Geo>): void {
 }
 
 function walk(): void {
-    console.log('***');
+    console.log('***walk');
     console.log(unlocked);
 
     unlocked.sort((one: Geo, two: Geo) => (one.out < two.out ? -1 : 1));
