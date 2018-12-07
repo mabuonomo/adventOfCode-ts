@@ -14,18 +14,21 @@ reader.on("line", (l: string) => {
 })
 
 reader.on("close", () => {
+    let start = new Date().getTime();
     data.forEach(hash => {
         data.forEach(compareHash => {
             let diff = HasOneDiff(hash.value, compareHash.value);
 
             if (diff[0]) {
                 console.log(hash.value + " " + compareHash.value + " " + diff[0] + " " + diff[1]);
-                
+
                 let result = hash.value.substr(0, diff[1]) + hash.value.substr(diff[1] + 1, hash.value.length);
                 console.log("Result: " + result);
             }
         });
     });
+
+    console.log("Timing: " + (new Date().getTime() - start));
 })
 
 function HasOneDiff(baseString: string, compareString: string): [boolean, number] {
