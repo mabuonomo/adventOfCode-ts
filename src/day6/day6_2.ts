@@ -20,74 +20,23 @@ reader.on("line", (l: string) => {
 
 reader.on("close", () => {
 
-    array.forEach(geo => {
-
-        for (let x = 0; x < getSize(array); x++) {
-            for (let y = 0; y < getSize(array); y++) {
-                if (matrix[x] === undefined) {
-                    matrix[x] = [];
-                }
-
-                let here: Geo = { x: x, y: y, name: geo.name };
-                let distance = manhattanDistance(here, geo);
-                if (matrix[x][y] === undefined || matrix[x][y].distance >= distance) {
-
-                    let geoCopy = { x: geo.x, y: geo.y, name: geo.name };
-                    if (matrix[x][y] !== undefined && matrix[x][y].distance == distance) {
-                        geoCopy.name = -1;
-                    }
-
-                    matrix[x][y] = { geo: geoCopy, distance: distance };
-
-                }
-            }
-        }
-    });
-
-    // console.log(matrix);
-
-    let counter = 0;
-    let geoMax: Geo = { x: 0, y: 0, name: 0 };
-    array.forEach(geo => {
-        let occ = 0;
-        let isBound = false;
-        for (let x = 0; x < getSize(array); x++) {
-            for (let y = 0; y < getSize(array); y++) {
-                if (matrix[x][y].geo.name === geo.name) {
-                    occ++;
-
-                    if (x == 0 || y == 0 || x == getSize(array) - 1 || y == getSize(array) - 1) {
-                        isBound = true;
-                        break;
-                    }
-                }
-            }
-
-            if (isBound) {
-                break;
-            }
-        }
-
-        if (!isBound && occ > counter) {
-            counter = occ;
-            geoMax = geo;
-        }
-    });
-
-    let countInternal = 0;
+    let points = 0;
     for (let x = 0; x < getSize(array); x++) {
         for (let y = 0; y < getSize(array); y++) {
-            let distance = manhattanDistance(matrix[x][y].geo, geoMax);
+            let sum = 0;
+            let geo: Geo = { x: x, y: y, name: new Date().getTime() + Math.random() };
+            array.forEach(geoTest => {
+                if (geoTest.name !== geo.name) {
+                    sum += manhattanDistance(geoTest, geo);
+                }
+            });
 
-            if (distance < 1000) {
-                countInternal++;
+            if (sum < 10000) {
+                points++;
             }
-        }
-
+        };
     }
-
-    // console.log('Geo ' + geoMax.x + ' ' + geoMax.y);
-    console.log('Result: ' + countInternal);
+    console.log('Points: ' + points);
 })
 
 function manhattanDistance(point1: Geo, point2: Geo) {
