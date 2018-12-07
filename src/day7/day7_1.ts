@@ -13,9 +13,12 @@ reader.on("line", (l: string) => {
     array.push(geo);
 });
 
+let last: Geo | undefined;
 
 reader.on("close", () => {
     let start = new Date().getTime();
+    last = getLast();
+
     getStart(array);
 
     console.log('***Result');
@@ -49,7 +52,7 @@ function getStart(array: Array<Geo>): void {
         }
     });
 
-    geo.sort((one: Geo, two: Geo) => (one.out < two.out ? -1 : 1));
+    geo.sort((one: Geo, two: Geo) => (one.in < two.in ? -1 : 1));
 
     if (geo.length > 0) {
         visited.push(geo[0]);
@@ -59,9 +62,10 @@ function getStart(array: Array<Geo>): void {
 
 function walk(): void {
     console.log('***walk');
-    console.log(unlocked);
 
+    // fra i due out seleziona quello minore
     unlocked.sort((one: Geo, two: Geo) => (one.out < two.out ? -1 : 1));
+    console.log(unlocked);
 
     if (unlocked.length == 0) {
         return;
@@ -69,13 +73,17 @@ function walk(): void {
 
     let unl = unlocked.shift();
 
+    // aggiungo alla vista dei visitati solo se non esiste già
     if (!visited.find((one: Geo | undefined) => one !== undefined && unl !== undefined && one.in == unl.in)) {
         visited.push(unl);
     }
 
     array.forEach(element => {
         if (unl !== undefined) {
-            if (element.in == unl.out && !unlocked.find((one: Geo) => unl !== undefined && one.out == unl.out)) {
+            if (element.in == unl.out && element.out !== unl.in &&
+                !unlocked.find((one: Geo) => unl !== undefined && one.out == unl.out) &&
+                last != undefined && element.in !== last.out
+            ) {
                 unlocked.push(element);
             }
         }
@@ -92,10 +100,34 @@ function buildResult(): string {
         }
     });
 
-    let last = visited.pop();
+    // let last = visited.pop();
     if (last !== undefined) {
         result += last.out;
     }
 
     return result;
+}
+
+function getLast(): Geo | undefined {
+    let geo: Array<Geo> = [];
+
+    array.forEach(elem => {
+        let find = false;
+        array.forEach(test => {
+            if (test.in !== elem.in && elem.out === test.in) {
+                find = true;
+            }
+        });
+
+        if (!find) {
+            geo.push(elem);
+        }
+    });
+
+    geo.sort((one: Geo, two: Geo) => (one.in > two.in ? -1 : 1));
+
+    // console.log("Last");
+    // console.log(geo);
+
+    return geo.shift();
 }
