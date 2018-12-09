@@ -4,7 +4,7 @@ import * as rd from 'readline'
 var reader = rd.createInterface(fs.createReadStream("./src/day9/input.txt"))
 
 type Game = { players: number, marbles: number };
-type Node = { value: number, next: Node, prev?: Node };
+type Node = { value: number, next?: Node, prev?: Node };
 
 let properties: Game;
 
@@ -21,26 +21,44 @@ reader.on("close", () => {
 })
 
 function game() {
-    const marbles = [0, 2, 1];
-    const players = new Uint32Array(properties.players);
-    let marbleIndex = 1;
-    players.fill(0);
+    const scores = [];
+    for (let i = 1; i <= properties.players; i += 1) {
+        scores[i] = 0;
+    }
+    let currentPlayer = 1;
 
-    for (let i = 3; i <= properties.marbles; i++) {
-        if (!(i % 10000)) console.log(i);
-        if (i % 23) {
-            marbleIndex += 2;
-            if (marbleIndex > marbles.length) marbleIndex -= marbles.length;
-            marbles.splice(marbleIndex, 0, i);
+    let current: Node = {
+        value: 0,
+    };
+    current.next = current;
+    current.prev = current;
+
+    for (let m = 1; m <= properties.marbles; m += 1) {
+        if (m % 23 === 0) {
+            scores[currentPlayer] += m;
+
+            current = current.prev!.prev!.prev!.prev!.prev!.prev!;
+
+            scores[currentPlayer] += current.prev!.value;
+            current.prev!.prev!.next = current;
+            current.prev = current.prev!.prev;
+
         } else {
-            let removeIndex = marbleIndex - 7;
-            if (removeIndex < 0) removeIndex += marbles.length;
-            players[i % properties.players] += i + marbles[removeIndex];
-            marbles.splice(removeIndex, 1);
-            marbleIndex = removeIndex;
+            current = addAfter(m, current.next!);
         }
+        currentPlayer = currentPlayer % properties.players + 1;
     }
 
-    // 400493
-    return Math.max(...players);
+    return Math.max(...Object.values(scores));
 }
+
+const addAfter = (value: number, marble: Node) => {
+    const toAdd = {
+        value,
+        prev: marble,
+        next: marble.next,
+    };
+    marble.next!.prev = toAdd;
+    marble.next = toAdd;
+    return toAdd;
+};
