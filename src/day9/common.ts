@@ -1,9 +1,9 @@
 import { NodeElm, Game } from "./types";
 
 export function game(properties: Game): number {
-    const scores = [];
+    const res = [];
     for (let i = 1; i <= properties.players; i += 1) {
-        scores[i] = 0;
+        res[i] = 0;
     }
     let currentPlayer = 1;
 
@@ -13,32 +13,32 @@ export function game(properties: Game): number {
     current.next = current;
     current.prev = current;
 
-    for (let m = 1; m <= properties.marbles; m += 1) {
-        if (m % 23 === 0) {
-            scores[currentPlayer] += m;
-
+    for (let i = 0; i < properties.marbles; i++) {
+        if (i % 23 === 0) {
+            res[currentPlayer] += i;
             current = current.prev!.prev!.prev!.prev!.prev!.prev!;
-
-            scores[currentPlayer] += current.prev!.value;
+            res[currentPlayer] += current.prev!.value;
             current.prev!.prev!.next = current;
             current.prev = current.prev!.prev;
 
         } else {
-            current = addAfter(m, current.next!);
+            current = addAfter(i, current.next!);
         }
         currentPlayer = currentPlayer % properties.players + 1;
     }
 
-    return Math.max(...Object.values(scores));
+    return Math.max(...Object.values(res));
 }
 
 function addAfter(value: number, marble: NodeElm) {
-    let toAdd: NodeElm = {
+    let newNode: NodeElm = {
         value,
         prev: marble,
         next: marble.next,
     };
-    marble.next!.prev = toAdd;
-    marble.next = toAdd;
-    return toAdd;
+    
+    marble.next!.prev = newNode;
+    marble.next = newNode;
+
+    return newNode;
 }
