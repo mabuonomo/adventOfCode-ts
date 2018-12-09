@@ -11,7 +11,7 @@ let properties: Game;
 reader.on("line", (l: string) => {
     let tokens = l.split(' ');
 
-    properties = { players: parseInt(tokens[0]), marbles: parseInt(tokens[6]) };
+    properties = { players: parseInt(tokens[0]), marbles: parseInt(tokens[6]) * 100 };
 });
 
 reader.on("close", () => {
