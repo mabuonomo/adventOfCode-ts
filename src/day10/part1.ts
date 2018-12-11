@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as rd from 'readline'
 import { number, func } from 'prop-types';
 
-var reader = rd.createInterface(fs.createReadStream("./src/day10/input.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day10/test.txt"))
 
 type Position = { x: number, y: number };
 type Velocity = { x: number, y: number };
@@ -56,35 +56,11 @@ function buildMatrix(minX: number, minY: number): Array<Array<string>> {
     return matrix;
 }
 
-function print(matrix: Array<Array<string>>, maxX: number, maxY: number, minX: number, minY: number) {
-
-    console.log('X: ' + (maxX + minX) / reduce);
-    console.log('Y: ' + (maxY + minY) / reduce);
-    // return;
-
-    for (let i = 0; i < (maxX + minX) / reduce; i++) {
-
-        let find = false;
-        for (let j = 0; j < (maxY + minY) / reduce; j++) {
-
-            if (matrix[i] === undefined || matrix[i][j] === undefined) {
-            } else {
-                find = true;
-            }
-
-            if (j % dimPixel === 0) {
-                if (find) {
-                    process.stdout.write('X');
-                } else {
-                    process.stdout.write('.');
-                }
-
-                find = false;
-            }
-        }
-
-        process.stdout.write("\n");
-    }
+function movePoints(s: number = 1) {
+    points.forEach(element => {
+        element.start.x *= (element.velocity.x * s);
+        element.start.y *= (element.velocity.y * s);
+    });
 }
 
 function getSize(): [number, number] {
@@ -116,7 +92,6 @@ function getMin(): [number, number] {
         }
     });
 
-    return [Math.abs(minX), Math.abs(minY)];
-    // return [minX, minY];
+    return [minX, minY];
 }
 
