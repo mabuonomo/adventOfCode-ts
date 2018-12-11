@@ -76,7 +76,7 @@ function print(matrix: Array<Array<string>>) {
     process.stdout.write('\n\n');
 }
 
-function movePoints(s: number = 6500) {
+function movePoints(s: number = 10200) {
 
     // for (let i = 0; i < points.length; i++) {
     console.log('Tento s: ' + s);
@@ -116,7 +116,7 @@ function movePoints(s: number = 6500) {
         // movePoints(++s);
 
     }
-    if (s === 100000) return
+    if (s >= 10300) return
     else {
         movePoints(++s);
     }
