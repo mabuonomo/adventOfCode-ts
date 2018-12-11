@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as rd from 'readline'
 import { number, func } from 'prop-types';
 
-var reader = rd.createInterface(fs.createReadStream("./src/day10/test.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day10/input.txt"))
 
 type Position = { x: number, y: number };
 type Velocity = { x: number, y: number };
@@ -27,7 +27,7 @@ reader.on("line", (l: string) => {
 reader.on("close", () => {
     let t = new Date().getTime();
 
-    console.log(points);
+    // console.log(points);
     // return; 
     // print(buildMatrix(minX, minY), maxX, maxY, minX, minY);
 
@@ -35,9 +35,7 @@ reader.on("close", () => {
     console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
 })
 
-let reduce = 1;
-
-function buildMatrix(minX: number, minY: number): Array<Array<string>> {
+function buildMatrix(points: Array<Point>, minX: number, minY: number): Array<Array<string>> {
     let matrix: Array<Array<string>> = [];
 
     let count = 0;
@@ -78,40 +76,53 @@ function print(matrix: Array<Array<string>>) {
     process.stdout.write('\n\n');
 }
 
-function movePoints(s: number = 1) {
+function movePoints(s: number = 6500) {
 
-    points.forEach(element => {
+    // for (let i = 0; i < points.length; i++) {
+    console.log('Tento s: ' + s);
+
+    let newPoints = JSON.parse(JSON.stringify(points)) as Array<Point>
+
+    newPoints.forEach(element => {
+        // let element = points[i];
         element.actual.x = element.start.x + (element.velocity.x * s);
         element.actual.y = element.start.y + (element.velocity.y * s);
     });
+
+    // }
 
     // console.log(points);
     // return;
 
     // if (s == 3) return;
 
-    let [maxX, maxY] = getSize();
+    let [maxX, maxY] = getSize(newPoints);
     // console.log("Max: " + maxX + " " + maxY);
 
-    let [minX, minY] = getMin();
+    let [minX, minY] = getMin(newPoints);
     // console.log("Min: " + minX + " " + minY);
 
     // console.log("Points: " + points.length);
 
-    // console.log(Math.abs(maxX - minX));
+    console.log("***" + Math.abs(maxX - minX) + " " + Math.abs(maxY - minY));
     // return;
 
     if (Math.abs(maxX - minX) <= points.length && Math.abs(maxY - minY) <= points.length) {
-        console.log('Tento s: ' + s);
-        let matrix = buildMatrix(minX, minY);
+        let matrix = buildMatrix(newPoints, minX, minY);
         print(matrix);
         movePoints(++s);
     } else {
-        return
+        // return
+        // movePoints(++s);
+
+    }
+    if (s === 100000) return
+    else {
+        movePoints(++s);
     }
 }
 
-function getSize(): [number, number] {
+function getSize(points: Array<Point>): [number, number] {
     let maxX = 0;
     let maxY = 0;
     points.forEach(element => {
@@ -127,7 +138,7 @@ function getSize(): [number, number] {
     return [maxX, maxY];
 }
 
-function getMin(): [number, number] {
+function getMin(points: Array<Point>): [number, number] {
     let minX = 0;
     let minY = 0;
     points.forEach(element => {
