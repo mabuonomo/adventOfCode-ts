@@ -5,7 +5,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "strict": true,
+    "strict": false,
     "noImplicitReturns": true,
     "noUnusedLocals": false,
     "declaration": true,
