@@ -1,100 +1,95 @@
+import { Dictionary } from "lodash";
+import { sort, ascendingBy, descendingBy } from "dotless";
+
 let fs = require("fs");
 let path = require('path');
-
-import { CarPosition } from "./CarPosition";
-
 let filepath = path.join(__dirname, "./input.txt");
-let lines = fs.readFileSync(filepath, "utf-8").split("\r\n");
 
-function displayRoadMap(roadmap: Array<Array<string>>) {
-    let rowIdx = 0;
-    while (rowIdx < lines.length) {
-        let rowDisplay = "";
-        for (let colIdx = 0; colIdx < roadmap.length; colIdx++) {
-            rowDisplay += roadmap[colIdx][rowIdx];
-        }
-        console.log(`${rowDisplay}`);
-        rowIdx++;
-    }
+interface Cart {
+    x: number;
+    y: number;
+    t: number;  // turn
+    d: number;  // direction
+    s: boolean; // safe
 }
+type Track = (c: Cart) => Cart;
+type CartBuilder = (x: number, y: number) => Cart;
 
-function elementIsCard(element: string) {
-    return element == ">" || element == "<" || element == "^" || element == "v";
-}
+const [L, R, ST] = [0, 1, 2];
+const [N, E, W, S] = [0, 1, 2, 3];
+const trackImpact: Dictionary<number[][]> = {
+    [N]: [[-1, 0, W], [1, 0, E], [0, -1, N]],
+    [E]: [[0, -1, N], [0, 1, S], [1, 0, E]],
+    [W]: [[0, 1, S], [0, -1, N], [-1, 0, W]],
+    [S]: [[1, 0, E], [-1, 0, W], [0, 1, S]],
+};
+const build = (d: number) => (x: number, y: number): Cart => ({ x, y, d, t: L, s: true });
+const moveCart = ({ x, y, t, d, s }: Cart, impact: number, nt: number | null = null): Cart => {
+    const i = trackImpact[d][impact];
+    return { x: x + i[0], y: y + i[1], d: i[2], t: nt !== null ? nt : t, s };
+};
+const straightTrack: Track = c => moveCart(c, ST);
+const curveForward: Track = c => moveCart(c, c.d === N || c.d === S ? R : L);
+const curveBackward: Track = c => moveCart(c, c.d === N || c.d === S ? L : R);
+const intersection: Track = c => moveCart(c, c.t, c.t === L ? ST : (c.t === ST ? R : L));
 
-// INIT MAPROAD
-let roadMap: Array<Array<string>> = [];
-roadMap = Array(lines[0].length).fill(null).map(item => (new Array(lines.length).fill(" ")));
-let roadMapNoCars: Array<Array<string>> = [];
-roadMapNoCars = Array(lines[0].length).fill(null).map(item => (new Array(lines.length).fill(" ")));
+const trackTypes: Dictionary<Track> = {
+    "/": curveForward, "\\": curveBackward, "-": straightTrack, "|": straightTrack, "+": intersection,
+    "v": straightTrack, "^": straightTrack, ">": straightTrack, "<": straightTrack
+};
 
-let carsPositions: Array<CarPosition> = [];
+const cartBuilders: Dictionary<CartBuilder> = {
+    "^": build(N), ">": build(E),
+    "<": build(W), "v": build(S),
+};
 
-// READ
-let rowIdx = 0;
-let cCard = 0;
-for (let line of lines) {
-    let lineParts = line.split('');
-    for (let column = 0; column < lineParts.length; column++) {
-        roadMap[column][rowIdx] = lineParts[column];
-        roadMapNoCars[column][rowIdx] = lineParts[column].replace("^", "|").replace("v", "|").replace(">", "-").replace("<", "-");
-        if (elementIsCard(lineParts[column])) {
-            let newCar = new CarPosition(cCard++, lineParts[column], [column, rowIdx]);
-            carsPositions.push(newCar);
-        }
-    }
-    rowIdx++;
-}
-
-// 
-function sortByPosition(a: CarPosition, b: CarPosition) {
-    if (a.coordX == b.coordX) return a.coordY - b.coordY;
-    return a.coordX - b.coordX;
-}
-
-let crashed = false;
-let coordCrashed: Array<number> = []
-let carsLeft = carsPositions.filter(_c => _c.isAlive).length;
-crashed = false;
-do {
-    carsPositions = carsPositions.filter(_c => _c.isAlive).sort((a, b) => sortByPosition(a, b));
-
-    for (let car of carsPositions) {
-        let originCharacter = roadMapNoCars[car.coordX][car.coordY];
-        roadMap[car.coordX][car.coordY] = originCharacter;
-        let nextCoord = car.getNextCoordinate();
-        car.coordX = nextCoord[0];
-        car.coordY = nextCoord[1];
-        let nextOriginCharacter = roadMapNoCars[nextCoord[0]][nextCoord[1]];
-        car.setOrientation(nextOriginCharacter);
-        if (nextOriginCharacter == "+") {
-            car.numIntersections += 1;
-        }
-        let stateNextCoord = roadMap[nextCoord[0]][nextCoord[1]];
-        if (stateNextCoord == "<" || stateNextCoord == ">" || stateNextCoord == "^" || stateNextCoord == "v") {
-            let crashedCar = carsPositions.find(_c => _c.coordX == nextCoord[0] && _c.coordY == nextCoord[1] && _c.cardId != car.cardId);
-            if (crashedCar != undefined) {
-                roadMap[crashedCar.coordX][crashedCar.coordY] = roadMapNoCars[crashedCar.coordX][crashedCar.coordY];
-                if (!crashed) {
-                    coordCrashed = [car.coordX, car.coordY];
-                    crashed = true;
-                }
-                car.isAlive = false;
-                crashedCar.isAlive = false;
-                carsPositions.splice(carsPositions.indexOf(car), 1);
-                carsPositions.splice(carsPositions.indexOf(crashedCar), 1);
+let lines = fs.readFileSync(filepath, "utf-8").split("\n");
+const parse = (ip: string) => lines //getInput(ip).split("\n")
+    .reduce(([tracks, carts], l, y) => {
+        l.split("").forEach((indicator, x) => {
+            if (trackTypes[indicator] !== undefined) {
+                tracks[`${x}_${y}`] = trackTypes[indicator];
             }
-        } else {
-            roadMap[car.coordX][car.coordY] = car.state;
-        }
+            if (cartBuilders[indicator] !== undefined) {
+                carts.push(cartBuilders[indicator](x, y));
+            }
+        });
+        return [tracks, carts];
+    }, [{}, []] as [Dictionary<Track>, Cart[]]) as [Dictionary<Track>, Cart[]];
+
+const solve = (ip: string) => {
+    // tslint:disable-next-line:prefer-const
+    let [tracks, carts] = parse(ip);
+    let [firstCrash, firstCrashLocation, lastCartLocation] = [false, "", ""];
+    const sorter = sort<Cart>(ascendingBy("y"), ascendingBy("x"));
+    while (carts.length > 1) {
+        carts = sorter(carts)
+            .reduce((movedCarts, cart, index) => {
+                const movedCart = tracks[`${cart.x}_${cart.y}`](cart);
+                let conflict = carts.find((oc, oci) => oci > index &&
+                    oc.x === movedCart.x &&
+                    oc.y === movedCart.y);
+                if (conflict === undefined) {
+                    conflict = movedCarts.find(oc => oc.x === movedCart.x &&
+                        oc.y === movedCart.y);
+                }
+                if (conflict !== undefined) {
+                    conflict.s = false;
+                    movedCart.s = false;
+                    if (!firstCrash) {
+                        firstCrash = true;
+                        firstCrashLocation = `${movedCart.x},${movedCart.y}`;
+                    }
+                }
+                movedCarts.push(movedCart);
+                return movedCarts;
+            }, [] as Cart[])
+            .filter(c => c.s);
     }
-    // displayRoadMap(roadMap);
-    carsLeft = carsPositions.filter(_c => _c.isAlive).length;
-} while (carsLeft > 1);
+    if (carts.length > 0) {
+        lastCartLocation = `${carts[0].x},${carts[0].y}`;
+    }
+    return [firstCrashLocation, lastCartLocation];
+};
 
-let carSurvivor = carsPositions.find(_c => _c.isAlive);
-
-if (carSurvivor != undefined) {
-    console.log(`Part 1 crashed: ${coordCrashed.toString()}!`);
-    console.log(`Part 2 survivor: ${carSurvivor.coordX},${carSurvivor.coordY}!`);
-}
+console.log(solve(lines));
