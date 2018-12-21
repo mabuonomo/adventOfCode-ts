@@ -88,8 +88,10 @@ export function initMatrix(dim: MatrixDim) {
 }
 
 export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
+    console.log(points);
     points.forEach(point => {
-        matrix[point.x][point.y] = point.x !== 500 && point.y !== 0 ? '#' : '+'
+        let isFountain: boolean = point.x === 500 && point.y === 0;
+        matrix[point.x][point.y] = !isFountain ? '#' : '+'
     })
 
     return matrix
@@ -98,8 +100,8 @@ export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
 export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
     process.stdout.write('\n\nMatrix\n');
     console.log(dim);
-    for (let y = dim.yMin; y < dim.yMax; y++) {
-        for (let x = dim.xMin; x < dim.xMax; x++) {
+    for (let y = dim.yMin; y <= dim.yMax; y++) {
+        for (let x = dim.xMin; x <= dim.xMax; x++) {
             process.stdout.write(matrix[x][y]);
         }
         process.stdout.write('\n');
