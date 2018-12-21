@@ -57,8 +57,8 @@ export function createPoints(match: RegExpExecArray): Array<Point> {
 }
 
 export function getDimMatrix(points: Array<Point>): MatrixDim {
-    let xMax = 0;
-    let yMax = 0;
+    let xMax = -Infinity;
+    let yMax = -Infinity;
     let xMin = Infinity;
     let yMin = Infinity;
 
@@ -106,4 +106,49 @@ export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
         process.stdout.write('\n');
     }
     process.stdout.write('\n');
+}
+
+export function flow(matrix: Array<Array<string>>, dim: MatrixDim) {
+    let position = { x: 500, y: 0 }
+    getNext(matrix, position, dim)
+}
+
+function getNext(matrix: Array<Array<string>>, position: Point, dim: MatrixDim) {
+    let char: string = matrix[position.x][position.y + 1];
+    let next: Point;
+    process.stdout.write('\nNext: ' + char + " " + position.x + " " + position.y)
+
+    switch (char) {
+        case '.':
+            matrix[position.x][position.y + 1] = '|'
+            next = { x: position.x, y: position.y + 1 }
+            break;
+
+        case '#':
+            // matrix[position.x][position.y] = '~'
+
+            
+
+            // if (matrix[position.x + 1][position.y] !== '#') { // right
+            //     next = { x: position.x + 1, y: position.y }
+            //     matrix[position.x + 1][position.y] = '~'
+            // } else if (matrix[position.x - 1][position.y] !== '#') { // left
+            //     next = { x: position.x - 1, y: position.y }
+            //     matrix[position.x - 1][position.y] = '~'
+            // } else {
+            //     next = { x: position.x, y: position.y - 1 }
+            // }
+            break;
+
+        case '~':
+            return
+            break;
+
+        case '|':
+            matrix[position.x][position.y + 1] = '~'
+            break;
+    }
+
+    printMatrix(matrix, dim)
+    getNext(matrix, next, dim)
 }

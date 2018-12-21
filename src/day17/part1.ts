@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as rd from 'readline'
-import { createPoints, initMatrix, putPoint, Point, printMatrix, getDimMatrix } from './utils';
+import { createPoints, initMatrix, putPoint, Point, printMatrix, getDimMatrix, flow } from './utils';
 
 var reader = rd.createInterface(fs.createReadStream("./src/day17/test.txt"))
 
@@ -23,7 +23,8 @@ reader.on("close", () => {
     let matrix = initMatrix(dim);
     let matrixBuild = putPoint(matrix, points)
 
-    printMatrix(matrixBuild, dim)
+    // printMatrix(matrixBuild, dim)
+    flow(matrix, dim);
 
     console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
 })
