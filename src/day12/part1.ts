@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as rd from 'readline'
+const Deque = require('double-ended-queue');
 
 var reader = rd.createInterface(fs.createReadStream("./src/day12/input.txt"))
 
@@ -10,54 +11,136 @@ reader.on("line", (l: string) => {
 });
 
 reader.on("close", () => {
-    let t = new Date().getTime();
+    let time = new Date().getTime();
 
-    const notes: { [key: string]: string } = {}
+    let data = lines;
 
-    lines.slice(2, lines.length).forEach((line: string) => {
-        const [scenario, next]: string[] = line.split(' => ')
+    const state = data[0].replace('initial state: ', '').split('').map(v => v === '#' ? 1 : 0);
 
-        notes[scenario] = next
-    })
+    const rules = data.slice(2)
+        .map(v => {
+            const matches = v.match(/^(.{5}) => (.)/);
+            return {
+                match: matches[1].split('').map(v => v === '#' ? 1 : 0),
+                output: matches[2] === '#' ? 1 : 0,
+            };
+        });
 
-    const runGenerations = (generationsCount: number): number => {
-        let initialPotIndex = 0
-        let state = RegExp(/initial state\: (.+)/).exec(lines[0])![1]
-
-        for (let gen = 1; gen <= generationsCount; gen++) {
-            state = '....' + state + '....'
-
-            initialPotIndex += 4
-
-            let nextState = state.replace(/\#/g, '.')
-
-            for (const [scenario, next] of Object.entries(notes)) {
-                for (let i = 0; i < state.length - 4; i++) {
-                    if (state.substr(i, 5) === scenario) {
-                        nextState = nextState.substring(0, i + 2) + next + nextState.substring(i + 3)
-                    }
-                }
-            }
-
-            state = nextState
+    // lookup table for whether a sequence lives
+    let liveTbl = [];
+    rules.forEach(r => {
+        let num = 0;
+        for (let i = 0; i < 5; i++) {
+            num = (num << 1) + r.match[i];
         }
+        liveTbl[num] = r.output;
+    });
 
-        return Array.from(state.split('').entries()).reduce((sum: number, [i, pot]: [number, string]) => {
-            const potNum = i - initialPotIndex
+    // array of plant indices
+    let plants = [];
+    state.forEach((v, idx) => {
+        if (v) { plants.push(idx); }
+    });
 
-            if (pot === '#') {
-                sum += potNum
-            }
-
-            return sum
-
-        }, 0)
+    // pretty print for the 20 generations case
+    function print(d) {
+        let str = '', idx = 0, numPlants = d.length;
+        for (let i = -20; i <= 120; i++) {
+            if (i < d.get(idx) || idx >= numPlants) { str += '.'; }
+            else { str += '#'; idx++; }
+        }
+        console.log(str);
     }
 
-    console.log('Part A', runGenerations(20))
+    // sum of 0th generation
+    // global variable gets modified in `generation`
+    let sum = plants.reduce((acc, cur) => acc + cur, 0);
 
-    // The pattern between generations is 81 over time
-    console.log('Part B', runGenerations(50000000000));// + (50000000000 - 200) * 81)
+    // count number of elapsed generations so we can math at
+    // the end without having to figure it out from the for
+    // loop value
+    let gen = 0;
 
-    console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
+    // progress a generation; consumes `d` and fills `newD`
+    function generation(d, newD) {
+        gen++;
+        if (newD.length) {
+            console.log('newD should always be empty');
+            process.exit();
+        }
+
+        let idx = 0, falseCount = 4, lastIdx = d.peekBack() + 2;
+        let window = 1;
+        do {
+            if (d.length && falseCount === 4) {
+                // fast forward
+                window = 1;
+                idx = d.shift();
+
+                // remove this id from the sum
+                sum -= idx;
+
+                // offset idx to two before the fast-forward
+                idx -= 2;
+                falseCount = 0;
+            } else {
+                idx++;
+            }
+
+            if (liveTbl[window]) {
+                newD.push(idx);
+                // add plant id to sum
+                sum += idx;
+            }
+
+            // advance once
+            window <<= 1;
+            if (d.peekFront() === idx + 3) {
+                window++;
+                falseCount = 0;
+                // remove this plant from the sum
+                sum -= d.shift();
+            } else {
+                falseCount++;
+            }
+            window &= 31;
+        } while (idx <= lastIdx);
+    }
+
+    // initial deques
+    let a = new Deque(plants), b = new Deque(a.length), t;
+    // calculate deltas at each generation until things
+    // converge to a fixed rate of increase
+    let prevSum = sum, delta = NaN, prevDelta = NaN, sameCount = 0;
+    let numGenerations = 50000000000;
+    for (let i = 0; i < numGenerations; i++) {
+        // swap back and forth between a and b directly
+        // instead of with a temp variable
+        generation(a, b);
+
+        prevDelta = delta;
+        delta = sum - prevSum;
+        prevSum = sum;
+
+        // swap our deques
+        t = a; a = b; b = t;
+
+        // see if we've converged to constant growth
+        if (delta === prevDelta) {
+            sameCount++;
+        } else {
+            sameCount = 0;
+        }
+
+        // skip ahead if so
+        if (sameCount > 100) {
+            let remaining = (numGenerations - gen);
+            sum += delta * remaining;
+            break;
+        }
+    }
+
+    console.log(sum);
+
+    console.log('Timing: ' + (new Date().getTime() - time) + ' ms');
 })
