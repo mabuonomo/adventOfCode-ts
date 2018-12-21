@@ -88,7 +88,6 @@ export function initMatrix(dim: MatrixDim) {
 }
 
 export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
-    console.log(points);
     points.forEach(point => {
         let isFountain: boolean = point.x === 500 && point.y === 0;
         matrix[point.x][point.y] = !isFountain ? '#' : '+'
