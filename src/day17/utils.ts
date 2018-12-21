@@ -97,12 +97,13 @@ export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
 }
 
 export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
-    process.stdout.write('\n\nMatrix\n');
-    console.log(dim);
+    process.stdout.write('\nMatrix\n');
+    // console.log(dim);
     for (let y = dim.yMin; y <= dim.yMax; y++) {
         for (let x = dim.xMin; x <= dim.xMax; x++) {
             process.stdout.write(matrix[x][y]);
         }
         process.stdout.write('\n');
     }
+    process.stdout.write('\n');
 }
