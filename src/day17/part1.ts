@@ -26,5 +26,15 @@ reader.on("close", () => {
     flow(matrixBuild, 500, 0, null, dim);
     printMatrix(matrixBuild, dim)
 
+    let water = 0;
+    for (let i = 0; i <= dim.xMax; i++) {
+        for (let j = 0; j <= dim.yMax; j++) {
+            if (matrixBuild[i][j] === '~' || matrixBuild[i][j] === '|') {
+                water++;
+            }
+        }
+    }
+    console.log(water);
+
     console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
 })
