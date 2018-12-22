@@ -6,6 +6,12 @@ var reader = rd.createInterface(fs.createReadStream("./src/day17/test.txt"))
 export type Point = { x: number, y: number }
 export type MatrixDim = { xMax: number, yMax: number, xMin: number, yMin: number }
 
+const CLAY = "#";
+const WATER = "~";
+const WATER_FLOW = "|";
+const FOUNTAIN = "+";
+const DOT = "."
+
 export function createPoints(match: RegExpExecArray): Array<Point> {
     let [_1, var1, start1, _2, end1, var2, start2, _3, end2] = [...match];
 
@@ -90,7 +96,7 @@ export function initMatrix(dim: MatrixDim) {
 export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
     points.forEach(point => {
         let isFountain: boolean = point.x === 500 && point.y === 0;
-        matrix[point.x][point.y] = !isFountain ? '#' : '+'
+        matrix[point.x][point.y] = !isFountain ? CLAY : FOUNTAIN
     })
 
     return matrix
@@ -108,47 +114,35 @@ export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
     process.stdout.write('\n');
 }
 
-export function flow(matrix: Array<Array<string>>, dim: MatrixDim) {
-    let position = { x: 500, y: 0 }
-    getNext(matrix, position, dim)
-}
-
-function getNext(matrix: Array<Array<string>>, position: Point, dim: MatrixDim) {
-    let char: string = matrix[position.x][position.y + 1];
-    let next: Point;
-    process.stdout.write('\nNext: ' + char + " " + position.x + " " + position.y)
-
-    switch (char) {
-        case '.':
-            matrix[position.x][position.y + 1] = '|'
-            next = { x: position.x, y: position.y + 1 }
-            break;
-
-        case '#':
-            // matrix[position.x][position.y] = '~'
-
-            
-
-            // if (matrix[position.x + 1][position.y] !== '#') { // right
-            //     next = { x: position.x + 1, y: position.y }
-            //     matrix[position.x + 1][position.y] = '~'
-            // } else if (matrix[position.x - 1][position.y] !== '#') { // left
-            //     next = { x: position.x - 1, y: position.y }
-            //     matrix[position.x - 1][position.y] = '~'
-            // } else {
-            //     next = { x: position.x, y: position.y - 1 }
-            // }
-            break;
-
-        case '~':
-            return
-            break;
-
-        case '|':
-            matrix[position.x][position.y + 1] = '~'
-            break;
+export let flow = (board: Array<Array<string>>, x: number, y: number, d = null, dim: MatrixDim) => {
+    printMatrix(board, dim)
+    if (board[x][y] === DOT) {
+        board[x][y] = WATER_FLOW;
     }
-
-    printMatrix(matrix, dim)
-    getNext(matrix, next, dim)
+    if (board[x][y] === CLAY) {
+        return x;
+    }
+    if (x === board.length - 1) {
+        return;
+    }
+    if (board[x][y + 1] === DOT) {
+        flow(board, x, y + 1, null, dim);
+    }
+    if (board[x][y + 1] === CLAY || board[x][y + 1] === WATER) {
+        if (d === 'l') {
+            return flow(board, x - 1, y, 'l', dim);
+        }
+        if (d === 'r') {
+            return flow(board, x + 1, y, 'r', dim);
+        }
+        let left = flow(board, x - 1, y, 'l', dim);
+        let right = flow(board, x + 1, y, 'r', dim);
+        if (board[left][y] === CLAY && board[right][y] === CLAY) {
+            for (let i = left + 1; i < right; i++) {
+                board[i][y] = WATER;
+            }
+        }
+    } else {
+        return x;
+    }
 }

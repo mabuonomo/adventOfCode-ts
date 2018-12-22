@@ -24,7 +24,7 @@ reader.on("close", () => {
     let matrixBuild = putPoint(matrix, points)
 
     // printMatrix(matrixBuild, dim)
-    flow(matrix, dim);
+    flow(matrix, 500, 0, null, dim);
 
     console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
 })
