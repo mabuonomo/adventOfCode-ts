@@ -115,7 +115,7 @@ export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
 }
 
 export let flow = (board: Array<Array<string>>, x: number, y: number, d = null, dim: MatrixDim) => {
-    printMatrix(board, dim)
+    // printMatrix(board, dim)
     if (board[x][y] === DOT) {
         board[x][y] = WATER_FLOW;
     }
