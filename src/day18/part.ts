@@ -7,7 +7,7 @@ const OPEN = ".";
 const TREES = "|";
 const LUMBERYARD = "#";
 
-function programReadLine(rl) {
+function start(rl: rd.Interface) {
     const INPUT_GRID = []; // [y][x]
     rl.on("line", line => {
         INPUT_GRID.push(line.split(""));
@@ -23,7 +23,7 @@ function programReadLine(rl) {
     });
 }
 
-function runPart1(initialGrid, minutes) {
+function runPart1(initialGrid = [], minutes: number) {
     let data = {
         result: null,
         grid: JSON.parse(JSON.stringify(initialGrid)),
@@ -44,7 +44,7 @@ function runPart1(initialGrid, minutes) {
     return data;
 }
 
-function runPart2(initialGrid, minutes) {
+function runPart2(initialGrid = [], minutes: number) {
     let data = {
         result: null,
         grid: JSON.parse(JSON.stringify(initialGrid)),
@@ -61,22 +61,19 @@ function runPart2(initialGrid, minutes) {
         let strGrid = JSON.stringify(data.grid);
         let prev = history[strGrid];
 
+        // find prev grid state
         if (prev) {
-            // pattern found, prev --> data.minute is the loop
             let loopLength = data.minute - prev;
-            // advance as much as we can
             while (data.minute < minutes) {
                 data.minute += loopLength;
             }
             data.minute -= loopLength;
-            // start over with the actual grid and only the remaining minutes (without history check!)
             return runPart1(data.grid, minutes - data.minute);
         } else {
             history[strGrid] = data.minute;
         }
     }
 
-    //printData(data);
     data.result = count(data, TREES) * count(data, LUMBERYARD);
 
     return data;
@@ -126,12 +123,4 @@ function count({ grid }, type) {
     return grid.map(row => row.filter(cell => cell === type).length).reduce((acc, curr) => acc + curr, 0);
 }
 
-function printData({ grid, minute }) {
-    console.log("After minute", minute);
-    grid.forEach(row => {
-        console.log(row.join(""));
-    });
-    console.log();
-}
-
-programReadLine(rl);
+start(rl);
