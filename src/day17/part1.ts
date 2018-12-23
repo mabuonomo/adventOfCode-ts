@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as rd from 'readline'
 import { createPoints, initMatrix, putPoint, Point, printMatrix, getDimMatrix, flow, CLAY, WATER, WATER_FLOW } from './utils';
 
-var reader = rd.createInterface(fs.createReadStream("./src/day17/test.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day17/input.txt"))
 
 let points: Array<Point> = [];
 
@@ -23,18 +23,25 @@ reader.on("close", () => {
     let matrix = initMatrix(dim);
     let matrixBuild = putPoint(matrix, points)
 
-    flow(matrixBuild, 500, 0, null, dim);
+    flow(matrixBuild, 500, 1, null, dim);
     printMatrix(matrixBuild, dim)
 
     let water = 0;
+    let waterFlow = 0;
     for (let i = 0; i <= dim.xMax; i++) {
         for (let j = 0; j <= dim.yMax; j++) {
-            if (matrixBuild[i][j] === WATER_FLOW || matrixBuild[i][j] === WATER) {
+            if (matrixBuild[i][j] === WATER) {
                 water++;
+            }
+
+            if (matrixBuild[i][j] === WATER_FLOW) {
+                waterFlow++;
             }
         }
     }
-    console.log('Result: ' + water);
+    console.log('Water: ' + water);
+    console.log('Flow: ' + waterFlow);
+    console.log('Result: ' + (water + waterFlow));
 
     console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
 })
