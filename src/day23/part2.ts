@@ -38,27 +38,23 @@ reader.on("close", () => {
 })
 
 function start(): number {
-    // let nanoStart: Position = { x: 0, y: 0, z: 0 }
-    // let radMax = nanoStart.radius.radius
-
     let xV = getX()
     let yV = getY()
     let zV = getZ()
 
     let counter = 0;
-    let nanoPoint: NanoPoint
     let pos: Position
 
     for (let x = xV[0]; x <= xV[1]; x++) {
         for (let y = yV[0]; y <= yV[1]; y++) {
             for (let z = zV[0]; z <= xV[1]; z++) {
                 let point: Position = { x: x, y: y, z: z }
-                console.log(point)
+                // console.log(point)
 
                 let countTmp = 0
                 let nano: NanoPoint
                 points.forEach(element => {
-                    if (manhattanDistance(point, element.pos) < element.radius.radius) {
+                    if (manhattanDistance(point, element.pos) <= element.radius.radius) {
                         countTmp++
                         nano = element
                     }
@@ -67,14 +63,17 @@ function start(): number {
                 if (counter < countTmp) {
                     counter = countTmp
                     pos = point
-
-                    // console.log()
                 }
             }
         }
     }
 
-    return counter
+    console.log(pos)
+    console.log(counter)
+
+
+    let sP: Position = { x: 0, y: 0, z: 0 }
+    return manhattanDistance(sP, pos)
 }
 
 function getMaxRadius(): NanoPoint {
@@ -95,8 +94,8 @@ function manhattanDistance(point1: Position, point2: Position): number {
 }
 
 function getX(): [number, number] {
-    let max = Infinity
-    let min = -Infinity
+    let max = -Infinity
+    let min = +Infinity
     points.forEach(element => {
         if (max < element.pos.x) {
             max = element.pos.x
@@ -107,12 +106,13 @@ function getX(): [number, number] {
         }
     })
 
-    return [max, min]
+    // console.log(max + " " + min)
+    return [min, max]
 }
 
 function getY(): [number, number] {
-    let max = Infinity
-    let min = -Infinity
+    let max = -Infinity
+    let min = +Infinity
     points.forEach(element => {
         if (max < element.pos.y) {
             max = element.pos.y
@@ -122,13 +122,14 @@ function getY(): [number, number] {
             min = element.pos.y
         }
     })
+    // console.log(max + " " + min)
 
-    return [max, min]
+    return [min, max]
 }
 
 function getZ(): [number, number] {
-    let max = Infinity
-    let min = -Infinity
+    let max = -Infinity
+    let min = +Infinity
     points.forEach(element => {
         if (max < element.pos.z) {
             max = element.pos.z
@@ -138,6 +139,7 @@ function getZ(): [number, number] {
             min = element.pos.z
         }
     })
+    // console.log(max + " " + min)
 
-    return [max, min]
+    return [min, max]
 }
