@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as rd from 'readline'
 import { element } from 'prop-types';
 
-var reader = rd.createInterface(fs.createReadStream("./src/day23/test2.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day23/input.txt"))
 
 type Position = { x: number, y: number, z: number }
 type Radius = { radius: number }
