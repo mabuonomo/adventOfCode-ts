@@ -24,19 +24,25 @@ reader.on("close", () => {
     let matrixBuild = putPoint(matrix, points)
 
     flow(matrixBuild, 500, 1, null, dim);
-    printMatrix(matrixBuild, dim)
+    // printMatrix(matrixBuild, dim)
+
+    // let width = dim.xMax - dim.xMin + 1 + 2; // overflow left and right
+    // let height = dim.yMax - dim.yMin + 1;
 
     let water = 0;
     let waterFlow = 0;
-    for (let i = 0; i <= dim.xMax; i++) {
+    for (let i = 0; i <= dim.xMax + 1; i++) {
         for (let j = 0; j <= dim.yMax; j++) {
-            if (matrixBuild[i][j] === WATER) {
-                water++;
-            }
+            // console.log(i + " " + j)
+            try {
+                if (matrixBuild[i][j] === WATER) {
+                    water++;
+                }
 
-            if (matrixBuild[i][j] === WATER_FLOW) {
-                waterFlow++;
-            }
+                if (matrixBuild[i][j] === WATER_FLOW) {
+                    waterFlow++;
+                }
+            } catch (err) { }
         }
     }
     console.log('Water: ' + water);

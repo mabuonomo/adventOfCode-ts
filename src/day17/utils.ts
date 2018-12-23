@@ -81,8 +81,8 @@ export function getDimMatrix(points: Array<Point>): MatrixDim {
 
 export function initMatrix(dim: MatrixDim) {
     let matrix: Array<Array<string>> = []
-    for (let x = 0; x <= dim.xMax; x++) {
-        for (let y = 0; y <= dim.yMax; y++) {
+    for (let x = 0; x <= dim.xMax + 10; x++) {
+        for (let y = 0; y <= dim.yMax + 10; y++) {
             if (matrix[x] === undefined) {
                 matrix[x] = []
             }
@@ -105,8 +105,8 @@ export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
 export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
     process.stdout.write('\nMatrix\n');
     // console.log(dim);
-    for (let y = dim.yMin - 1; y <= dim.yMax; y++) {
-        for (let x = dim.xMin - 1; x <= dim.xMax; x++) {
+    for (let y = dim.yMin - 1; y <= dim.yMax + 1; y++) {
+        for (let x = dim.xMin - 1; x <= dim.xMax + 1; x++) {
             process.stdout.write(matrix[x][y]);
         }
         process.stdout.write('\n');
