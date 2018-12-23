@@ -6,11 +6,11 @@ var reader = rd.createInterface(fs.createReadStream("./src/day17/test.txt"))
 export type Point = { x: number, y: number }
 export type MatrixDim = { xMax: number, yMax: number, xMin: number, yMin: number }
 
-const CLAY = "#";
-const WATER = "~";
-const WATER_FLOW = "|";
-const FOUNTAIN = "+";
-const DOT = "."
+export const CLAY = "#";
+export const WATER = "~";
+export const WATER_FLOW = "|";
+export const FOUNTAIN = "+";
+export const DOT = "."
 
 export function createPoints(match: RegExpExecArray): Array<Point> {
     let [_1, var1, start1, _2, end1, var2, start2, _3, end2] = [...match];
@@ -105,8 +105,8 @@ export function putPoint(matrix: Array<Array<string>>, points: Array<Point>) {
 export function printMatrix(matrix: Array<Array<string>>, dim: MatrixDim) {
     process.stdout.write('\nMatrix\n');
     // console.log(dim);
-    for (let y = dim.yMin; y <= dim.yMax; y++) {
-        for (let x = dim.xMin; x <= dim.xMax; x++) {
+    for (let y = dim.yMin-1; y <= dim.yMax; y++) {
+        for (let x = dim.xMin-1; x <= dim.xMax; x++) {
             process.stdout.write(matrix[x][y]);
         }
         process.stdout.write('\n');
