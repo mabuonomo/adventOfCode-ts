@@ -1,197 +1,145 @@
-'use strict';
+import * as fs from 'fs';
+import * as rd from 'readline'
+import { element } from 'prop-types';
 
-const fs1 = require('fs');
-const data = fs1.readFileSync("./src/day23/input.txt")
-    .toString()
-    .split('\n')
-    .map(v => {
-        let match = v.match(/pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(-?\d+)/);
-        // console.log(match)
-        return {
-            x: parseInt(match[1], 10),
-            y: parseInt(match[2], 10),
-            z: parseInt(match[3], 10),
-            r: parseInt(match[4], 10),
-        };
-    });
+var reader = rd.createInterface(fs.createReadStream("./src/day23/test2.txt"))
 
-let strongest = null;
-let max1 = -Infinity
-let minx = Infinity, maxx = -Infinity,
-    miny = Infinity, maxy = -Infinity,
-    minz = Infinity, maxz = -Infinity;
+type Position = { x: number, y: number, z: number }
+type Radius = { radius: number }
+type NanoPoint = { pos: Position, radius: Radius }
 
-data.forEach(nb => {
-    minx = Math.min(nb.x, minx);
-    maxx = Math.max(nb.x, maxx);
-    miny = Math.min(nb.x, miny);
-    maxy = Math.max(nb.x, maxy);
-    minz = Math.min(nb.x, minz);
-    maxz = Math.max(nb.x, maxz);
+let points: Array<NanoPoint> = []
 
-    if (nb.r > max1) {
-        max1 = nb.r;
-        strongest = nb;
-    }
+// pos=<1,3,1>, r=1
+reader.on("line", (l: string) => {
+    let tmp = l.split(" ")
+    let radius = parseInt(tmp[1].split('r=')[1])
+    // console.log(radius);
+
+    let pos = tmp[0].split('pos=')[1].replace('<', '').replace('>', '').split(',')
+    let x = parseInt(pos[0])
+    let y = parseInt(pos[1])
+    let z = parseInt(pos[2])
+    // console.log(x + " " + y + " " + z)
+
+    let position = { x: x, y: y, z: z }
+    let r = { radius: radius }
+    let nano: NanoPoint = { pos: position, radius: r }
+
+    points.push(nano);
 });
 
-const mhd = (a, b) =>
-    Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z);
+reader.on("close", () => {
+    let t = new Date().getTime();
 
-let a = data.filter(v => mhd(v, strongest) <= strongest.r);
-console.log('part 1:', a.length);
+    console.log('Result: ' + start())
 
-const countBots = bot => {
-    let count = 0;
-    data.forEach(nb => {
-        if (mhd(bot, nb) <= nb.r) count++;
-    });
-    return count;
-};
+    console.log('Timing: ' + (new Date().getTime() - t) + ' ms');
+})
 
-const inRangeOfVolume = (vol, bot) => {
-    let cost = 0;
-    if (bot.x > vol.xmax) {
-        cost += bot.x - vol.xmax;
-    } else if (bot.x < vol.xmin) {
-        cost += vol.xmin - bot.x;
-    }
-    if (bot.y > vol.ymax) {
-        cost += bot.y - vol.ymax;
-    } else if (bot.y < vol.ymin) {
-        cost += vol.ymin - bot.y;
-    }
-    if (bot.z > vol.zmax) {
-        cost += bot.z - vol.zmax;
-    } else if (bot.z < vol.zmin) {
-        cost += vol.zmin - bot.z;
-    }
-    return cost <= bot.r;
-};
+function start(): number {
+    let xV = getX()
+    let yV = getY()
+    let zV = getZ()
 
-const inRangeOfVolumeWorstCase = (vol, bot) => {
-    let cost = 0;
-    if (bot.x < vol.xmin) {
-        cost += vol.xmax - bot.x;
-    } else if (bot.x > vol.xmax) {
-        cost += bot.x - vol.xmin;
-    } else {
-        cost += Math.max(bot.x - vol.xmin, vol.xmax - bot.x);
-    }
-    if (bot.y < vol.ymin) {
-        cost += vol.ymax - bot.y;
-    } else if (bot.y > vol.ymax) {
-        cost += bot.y - vol.ymin;
-    } else {
-        cost += Math.max(bot.y - vol.ymin, vol.ymax - bot.y);
-    }
-    if (bot.z < vol.zmin) {
-        cost += vol.zmax - bot.z;
-    } else if (bot.z > vol.zmax) {
-        cost += bot.z - vol.zmin;
-    } else {
-        cost += Math.max(bot.z - vol.zmin, vol.zmax - bot.z);
-    }
-    return cost;
-};
+    let counter = 0;
+    let pos: Position
 
-const nearestPoint = (vol, bot) => {
-    let nx = (bot.x > vol.xmax ? vol.xmax : bot.x < vol.xmin ? vol.xmin : bot.x),
-        ny = (bot.y > vol.ymax ? vol.ymax : bot.y < vol.ymin ? vol.ymin : bot.y),
-        nz = (bot.z > vol.zmax ? vol.zmax : bot.z < vol.zmin ? vol.zmin : bot.z);
-    return {x: nx, y: ny, z: nz};
-};
+    for (let x = xV[0]; x <= xV[1]; x++) {
+        for (let y = yV[0]; y <= yV[1]; y++) {
+            for (let z = zV[0]; z <= xV[1]; z++) {
+                let point: Position = { x: x, y: y, z: z }
+                // console.log(point)
 
-const botsInRange = (vol) => {
-    let set = new Set();
-    for (let nb of data) {
-        if (inRangeOfVolume(vol, nb)) { set.add(nb); }
-    }
-    return set;
-};
-const countBotsReachVolume = (vol) => {
-    let count = 0;
-    for (let nb of data) {
-        if (inRangeOfVolume(vol, nb)) count++;
-    }
-    return count;
-};
+                let countTmp = 0
+                let nano: NanoPoint
+                points.forEach(element => {
+                    if (manhattanDistance(point, element.pos) <= element.radius.radius) {
+                        countTmp++
+                        nano = element
+                    }
+                })
 
-const setEquals = (a, b) => {
-    if (a.size !== b.size) { return false; }
-    for (const item of a) { if (!b.has(item)) return false; }
-    return true;
-};
-
-let vol = {
-    xmin: Math.min(minx, miny, minz),
-    xmax: Math.max(maxx, maxy, maxz),
-    ymin: Math.min(minx, miny, minz),
-    ymax: Math.max(maxx, maxy, maxz),
-    zmin: Math.min(minx, miny, minz),
-    zmax: Math.max(maxx, maxy, maxz),
-};
-
-const subdivide = vol => {
-    if (vol.xmin === vol.xmax && vol.ymin === vol.ymax && vol.zmin === vol.zmax) {
-        return null;
-    }
-
-    let xmid = Math.floor((vol.xmax - vol.xmin) / 2 + vol.xmin),
-        ymid = Math.floor((vol.ymax - vol.ymin) / 2 + vol.ymin),
-        zmid = Math.floor((vol.zmax - vol.zmin) / 2 + vol.zmin);
-
-    return [
-        { xmin: vol.xmin, xmax: xmid,     ymin: vol.ymin, ymax: ymid,     zmin: vol.zmin, zmax: zmid     },
-        { xmin: xmid + 1, xmax: vol.xmax, ymin: vol.ymin, ymax: ymid,     zmin: vol.zmin, zmax: zmid     },
-        { xmin: vol.xmin, xmax: xmid,     ymin: ymid + 1, ymax: vol.ymax, zmin: vol.zmin, zmax: zmid     },
-        { xmin: xmid + 1, xmax: vol.xmax, ymin: ymid + 1, ymax: vol.ymax, zmin: vol.zmin, zmax: zmid     },
-        { xmin: vol.xmin, xmax: xmid,     ymin: vol.ymin, ymax: ymid,     zmin: zmid + 1, zmax: vol.zmax },
-        { xmin: xmid + 1, xmax: vol.xmax, ymin: vol.ymin, ymax: ymid,     zmin: zmid + 1, zmax: vol.zmax },
-        { xmin: vol.xmin, xmax: xmid,     ymin: ymid + 1, ymax: vol.ymax, zmin: zmid + 1, zmax: vol.zmax },
-        { xmin: xmid + 1, xmax: vol.xmax, ymin: ymid + 1, ymax: vol.ymax, zmin: zmid + 1, zmax: vol.zmax },
-    ];
-};
-
-let origin2 = {x: 0, y: 0, z: 0};
-let vols = [ vol ];
-while (
-    vols.length > 1 ||
-    vols[0].xmin !== vols[0].xmax ||
-    vols[0].ymin !== vols[0].ymax ||
-    vols[0].zmin !== vols[0].zmax
-) {
-    let best = -Infinity;
-
-    let newVols = [ ], sets = new Map();
-    vols.reduce((acc, cur) =>
-        acc.concat(subdivide(cur))
-    , [ ]).forEach(v => {
-        v.inRange = botsInRange(v);
-        let c = v.inRange.size;
-        if (c > best) {
-            best = c;
-            newVols = [ v ];
-        } else if (c === best) {
-            newVols.push(v);
-        }
-    });
-
-    newVols.forEach(nv => {
-        for (let bestSet of sets.keys()) {
-            if (!setEquals(nv.inRange, bestSet)) { continue; }
-            let d1 = mhd(nearestPoint(nv, origin2), origin2),
-                d2 = mhd(nearestPoint(sets.get(bestSet), origin2), origin2);
-            if (d1 < d2) {
-                sets.set(bestSet, nv);
+                if (counter < countTmp) {
+                    counter = countTmp
+                    pos = point
+                }
             }
-            return;
         }
-        sets.set(nv.inRange, nv);
-    });
-    vols = [...sets.values()];
+    }
+
+    console.log(pos)
+    console.log(counter)
+
+
+    let sP: Position = { x: 0, y: 0, z: 0 }
+    return manhattanDistance(sP, pos)
 }
 
-let np = nearestPoint(vols[0], origin2);
-// console.log(mhd(np, origin2), vols[0].inRange.size, np);
-console.log(mhd(np, origin2));//, vols[0], np);
+function getMaxRadius(): NanoPoint {
+    let max = Number.MIN_VALUE
+    let result: NanoPoint
+    points.forEach(element => {
+        if (element.radius.radius > max) {
+            max = element.radius.radius
+            result = element
+        }
+    })
+
+    return result
+}
+
+function manhattanDistance(point1: Position, point2: Position): number {
+    return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y) + Math.abs(point1.z - point2.z)
+}
+
+function getX(): [number, number] {
+    let max = -Infinity
+    let min = +Infinity
+    points.forEach(element => {
+        if (max < element.pos.x) {
+            max = element.pos.x
+        }
+
+        if (min > element.pos.x) {
+            min = element.pos.x
+        }
+    })
+
+    // console.log(max + " " + min)
+    return [min, max]
+}
+
+function getY(): [number, number] {
+    let max = -Infinity
+    let min = +Infinity
+    points.forEach(element => {
+        if (max < element.pos.y) {
+            max = element.pos.y
+        }
+
+        if (min > element.pos.y) {
+            min = element.pos.y
+        }
+    })
+    // console.log(max + " " + min)
+
+    return [min, max]
+}
+
+function getZ(): [number, number] {
+    let max = -Infinity
+    let min = +Infinity
+    points.forEach(element => {
+        if (max < element.pos.z) {
+            max = element.pos.z
+        }
+
+        if (min > element.pos.z) {
+            min = element.pos.z
+        }
+    })
+    // console.log(max + " " + min)
+
+    return [min, max]
+}
