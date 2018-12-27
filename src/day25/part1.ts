@@ -57,9 +57,9 @@ function start(): number {
             }
         }
 
-        // if (!findCostellation) {
-        //     element.costellation.push(hash)
-        // }
+        if (!findCostellation) {
+            element.costellation.push(hash)
+        }
     })
 
     return createCostellations().length
@@ -74,6 +74,26 @@ function checkSamePoint(point1: Position, point2: Position): boolean {
 
 function createCostellations(): Array<string> {
     let costellations: Array<string> = []
+
+    console.log(points)
+
+    points.forEach(element => {
+        while (element.costellation.length > 1) {
+            let cost = element.costellation.pop()
+            let costNext = element.costellation.pop()
+
+            for (let i = 0; i < points.length; i++) {
+                let point = points[i]
+
+                if (point.costellation.indexOf(cost) > 0) {
+                    point.costellation[point.costellation.indexOf(cost)] = costNext
+                }
+            }
+
+            element.costellation.push(costNext)
+        }
+    })
+
     points.forEach(element => {
         let find = false
         element.costellation.sort()
@@ -91,6 +111,7 @@ function createCostellations(): Array<string> {
         }
     })
 
+    console.log('\nFinal')
     console.log(points)
     console.log(costellations)
     return costellations
