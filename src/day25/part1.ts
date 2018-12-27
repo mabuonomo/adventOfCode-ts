@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as rd from 'readline'
 import { element } from 'prop-types';
 
-var reader = rd.createInterface(fs.createReadStream("./src/day25/test2.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day25/test1.txt"))
 
 type Position = { x: number, y: number, z: number, r: number, costellation: Array<string> }
 let points: Array<Position> = []
@@ -35,7 +35,7 @@ function start(): number {
     points.forEach(element => {
 
         // if (element.costellation == null) {
-        let findCostellation = false
+        // let findCostellation = false
         let hash = createHash()
         for (let i = 0; i < points.length; i++) {
             let pos = points[i]
@@ -46,20 +46,20 @@ function start(): number {
             if (manhattanDistance(pos, element) <= 3) {
                 if (pos.costellation.length > 0) {
                     hash = pos.costellation[0]
-                    // console.log(hash)
                 }
 
                 if (element.costellation.indexOf(hash) < 0) {
                     element.costellation.push(hash)
                 }
-                findCostellation = true;
-                // break;
+                // findCostellation = true;
             }
         }
 
-        if (!findCostellation) {
-            element.costellation.push(hash)
-        }
+        // if (!findCostellation) {
+        //     if (element.costellation.indexOf(hash) < 0) {
+        //         element.costellation.push(hash)
+        //     }
+        // }
     })
 
     return createCostellations().length
@@ -85,6 +85,10 @@ function createCostellations(): Array<string> {
             for (let i = 0; i < points.length; i++) {
                 let point = points[i]
 
+                if (checkSamePoint(point, element)) {
+                    continue
+                }
+
                 if (point.costellation.indexOf(cost) > 0) {
                     point.costellation[point.costellation.indexOf(cost)] = costNext
                 }
@@ -94,25 +98,23 @@ function createCostellations(): Array<string> {
         }
     })
 
+    console.log('\nFinal')
+    console.log(points)
     points.forEach(element => {
         let find = false
         element.costellation.sort()
         element.costellation.forEach(cos => {
             if (costellations.indexOf(cos) > 0) {
-                // costellations.push(cos)
                 find = true
             }
         })
 
-        let hash = element.costellation[0]
-        if (!find && costellations.indexOf(hash) < 0) {//&& hash != undefined) {
-            // console.log(element.costellation[0])
+        let hash = element.costellation.pop()
+        if (!find && costellations.indexOf(hash) < 0 && hash != undefined) {
             costellations.push(hash)
         }
     })
 
-    console.log('\nFinal')
-    console.log(points)
     console.log(costellations)
     return costellations
 }
