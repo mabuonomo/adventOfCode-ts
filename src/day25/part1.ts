@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as rd from 'readline'
 import { element } from 'prop-types';
 
-var reader = rd.createInterface(fs.createReadStream("./src/day25/test1.txt"))
+var reader = rd.createInterface(fs.createReadStream("./src/day25/test2.txt"))
 
 type Position = { x: number, y: number, z: number, r: number, costellation: Array<string> }
 let points: Array<Position> = []
@@ -110,7 +110,10 @@ function createCostellations(): Array<string> {
         })
 
         let hash = element.costellation.pop()
-        if (!find && costellations.indexOf(hash) < 0 && hash != undefined) {
+        if (hash == undefined) {
+            hash = createHash() + '_test'
+        }
+        if (!find && costellations.indexOf(hash) < 0) {//} && hash != undefined) {
             costellations.push(hash)
         }
     })
