@@ -4,9 +4,9 @@ Advent of Code - TS
 The solutions are in typescript language.
 
 Years:
-* 2017
-* 2018
-* 2019
+* 2017 (partial)
+* 2018 (partial)
+* 2019 (wip)
 
 ## Build
 ```bash
@@ -21,4 +21,27 @@ Example
 ```bash
 docker-compose run app npm run format
 docker-compose run app ts-node src/2018/day1/part1.ts
+```
+
+
+# Improve your skills, test your performance
+This project use the performaceLog decorator (https://github.com/mabuonomo/decorators-utils-ts)
+
+## Install
+
+```bash
+npm install --save decorators-utils-ts
+```   
+
+## Usage
+
+```ts
+@performanceLog(true) // <-- decorator
+myMethod(): boolean {
+    return true
+}
+```
+Result
+```bash
+Call [3ms]: myMethod() => true
 ```
