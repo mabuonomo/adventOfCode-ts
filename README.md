@@ -25,7 +25,7 @@ docker-compose run app ts-node src/2018/day1/part1.ts
 
 
 # Improve your skills, test your performance
-This project use the performaceLog decorator (https://github.com/mabuonomo/decorators-utils-ts)
+This project uses the performaceLog decorator (https://github.com/mabuonomo/decorators-utils-ts)
 
 ## Install
 
