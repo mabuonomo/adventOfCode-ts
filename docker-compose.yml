@@ -1,9 +1,8 @@
 version: "3.2"
 services:
   app:
-    container_name: advent_of_code_2018
     build:
-      context: ./
+      context: .docker
       dockerfile: DockerFile
     volumes:
-      - .:/home/app/
+      - .:/app/
