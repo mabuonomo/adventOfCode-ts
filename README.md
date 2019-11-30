@@ -1,8 +1,12 @@
-Advent of Code 2018 - TS
+Advent of Code - TS
 ===================
 
 The solutions are in typescript language.
-Stages 16/25
+
+Years:
+* 2017
+* 2018
+* 2019
 
 ## Build
 ```bash
