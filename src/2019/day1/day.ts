@@ -7,15 +7,14 @@ class Day1 extends InitAbstract {
   constructor() {
     super();
 
-    this.lines = this.getLines('day1');
+    this.lines = this.getLines('day1', false);
   }
 
   @performanceLog(true)
-  runPart11() {
+  runPart11(): number {
     const result = this.lines.reduce((acc, value) => this.sumString(acc, value));
-    // console.log(result);
 
-    return result;
+    return parseInt(result);
   }
 
   sumString(acc: string, value: string): string {
