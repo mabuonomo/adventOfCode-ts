@@ -11,20 +11,46 @@ class Day1 extends InitAbstract {
   }
 
   @performanceLog(true)
-  runPart11(): number {
-    const result = this.lines.reduce((acc, value) => this.sumString(acc, value));
+  runPart1(): number {
+    const result = this.lines.reduce((acc, value) => this.sumString(acc, value, false));
 
     return parseInt(result);
   }
 
-  sumString(acc: string, value: string): string {
-    let tot = parseInt(acc);
-    let num: number = parseInt(value);
+  @performanceLog(true)
+  runPart2(): number {
+    const result = this.lines.reduce((acc, value) => this.sumString(acc, value, true));
 
-    let sum: number = tot + (Math.floor(num / 3) - 2);
+    return parseInt(result);
+  }
+
+  sumString(acc: string, value: string, rec: boolean): string {
+    let tot = parseInt(acc);
+    let recVal = this.calculateRecursive(value, rec);
+    // console.log('Sum fuel: ' + value + ' ' + recVal);
+    let sum: number = tot + recVal;
 
     return sum.toString();
   }
+
+  calculateRecursive(value: string, rec: boolean = true): number {
+    let num: number = parseInt(value);
+
+    let carb = Math.floor(num / 3) - 2;
+
+    if (!rec) {
+      return carb;
+    }
+    // console.log(num + ' ' + carb);
+
+    if (carb <= 0) {
+      return 0;
+    }
+
+    return carb + this.calculateRecursive(carb.toString());
+  }
 }
 
-new Day1().runPart11();
+let day = new Day1();
+day.runPart1();
+day.runPart2();
