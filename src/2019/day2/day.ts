@@ -24,8 +24,8 @@ class Day extends InitAbstract {
   @performanceLog(true)
   runPart2(): [number, number] {
     let goal = 19690720;
-    for (let i = 0; i <= 99; i++) {
-      for (let j = 0; i <= 99; j++) {
+    for (let i = 0; i < 99; i++) {
+      for (let j = 0; i < 99; j++) {
         let res = this.calculate(i, j, Object.assign([], this.reg));
 
         if (res > goal) {
