@@ -22,10 +22,10 @@ class Day extends InitAbstract {
   }
 
   @performanceLog(true)
-  runPart2(): [number, number] {
+  runPart2(): number {
     let goal = 19690720;
     for (let i = 0; i < 99; i++) {
-      for (let j = 0; i < 99; j++) {
+      for (let j = 0; j < 99; j++) {
         let res = this.calculate(i, j, Object.assign([], this.reg));
 
         if (res > goal) {
@@ -33,11 +33,11 @@ class Day extends InitAbstract {
         }
 
         if (res == goal) {
-          return [i, j];
+          return 100 * i * j;
         }
       }
     }
-    return [0, 0];
+    return 0;
   }
 
   calculate(noun: number, verb: number, registry: Array<number>): number {
