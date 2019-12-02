@@ -23,6 +23,10 @@ docker-compose run app npm run format
 docker-compose run app ts-node src/2018/day1/part1.ts
 ```
 
+## Testing (using Jest)
+```bash
+docker-compose run app npm test
+```
 
 # Improve your skills, test your performance
 This project uses the performaceLog decorator (https://github.com/mabuonomo/decorators-utils-ts)
