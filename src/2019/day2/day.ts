@@ -18,8 +18,17 @@ class Day extends InitAbstract {
 
   @performanceLog(true)
   runPart1(): number {
-    this.reg[1] = 12;
-    this.reg[2] = 2;
+    return this.calculate(12, 2);
+  }
+
+  @performanceLog(true)
+  runPart2(): number {
+    return 0;
+  }
+
+  calculate(noun: number, verb: number): number {
+    this.reg[1] = noun; //12;
+    this.reg[2] = verb; //2;
 
     for (let i = 0; i < this.reg.length; i += 4) {
       switch (this.reg[i]) {
@@ -41,11 +50,6 @@ class Day extends InitAbstract {
     }
 
     return this.reg[0];
-  }
-
-  @performanceLog(true)
-  runPart2(): number {
-    return 0;
   }
 }
 
