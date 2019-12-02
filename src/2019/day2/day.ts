@@ -18,7 +18,7 @@ class Day extends InitAbstract {
 
   @performanceLog(true)
   runPart1(): number {
-    return this.calculate(12, 2);
+    return this.calculate(12, 2, Object.assign([], this.reg));
   }
 
   @performanceLog(true)
@@ -26,30 +26,30 @@ class Day extends InitAbstract {
     return 0;
   }
 
-  calculate(noun: number, verb: number): number {
-    this.reg[1] = noun; //12;
-    this.reg[2] = verb; //2;
+  calculate(noun: number, verb: number, registry: Array<number>): number {
+    registry[1] = noun; //12;
+    registry[2] = verb; //2;
 
-    for (let i = 0; i < this.reg.length; i += 4) {
-      switch (this.reg[i]) {
+    for (let i = 0; i < registry.length; i += 4) {
+      switch (registry[i]) {
         case 1:
-          let add1 = this.reg[this.reg[i + 1]];
-          let add2 = this.reg[this.reg[i + 2]];
-          this.reg[this.reg[i + 3]] = add1 + add2;
+          let add1 = registry[registry[i + 1]];
+          let add2 = registry[registry[i + 2]];
+          registry[registry[i + 3]] = add1 + add2;
           break;
         case 2:
-          let mul1 = this.reg[this.reg[i + 1]];
-          let mul2 = this.reg[this.reg[i + 2]];
-          this.reg[this.reg[i + 3]] = mul1 * mul2;
+          let mul1 = registry[registry[i + 1]];
+          let mul2 = registry[registry[i + 2]];
+          registry[registry[i + 3]] = mul1 * mul2;
           break;
         case 99:
-          return this.reg[0];
+          return registry[0];
         default:
           console.log('Attention code not recognized');
       }
     }
 
-    return this.reg[0];
+    return registry[0];
   }
 }
 
