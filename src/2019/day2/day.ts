@@ -33,7 +33,7 @@ class Day extends InitAbstract {
         }
 
         if (res == goal) {
-          return 100 * i * j;
+          return 100 * (i + j);
         }
       }
     }
