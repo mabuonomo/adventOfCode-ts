@@ -4,54 +4,36 @@ import { valueToNode } from '@babel/types';
 
 export class Day extends InitAbstract {
   lines: Array<string>;
+  startPoint: Geo = { x: 0, y: 0 };
+  matrix: Array<Array<number>> = [];
 
   reg: Array<number> = [];
   maxH = 0;
   // points: Array<Geo> = [];
-  command: Array<Direction> = [];
+  paths: Array<Array<Direction>> = [];
 
   constructor() {
     super();
 
-    this.lines = this.getLines('day3', false);
+    this.lines = this.getLines('day3', true);
 
-    this.command = this.buildDirection(this.lines[0]);
-  }
-
-  @performanceLog(true)
-  runPart1(): any {}
-
-  @performanceLog(true)
-  runPart2(): any {}
-
-  buildPoint(commands: Array<Direction>): Array<Geo> {
-    let start: Geo = { x: 0, y: 0 };
-
-    let points: Array<Geo> = [];
-    points.push(start);
-
-    let last = start;
-
-    commands.forEach((element) => {
-      switch (element.direction) {
-        case 'R':
-          last = { x: last.x + element.value, y: last.y };
-          break;
-        case 'L':
-          last = { x: last.x - element.value, y: last.y };
-          break;
-        case 'D':
-          last = { x: last.x, y: last.y - element.value };
-          break;
-        case 'U':
-          last = { x: last.x, y: last.y + element.value };
-          break;
-      }
-      points.push(last);
+    this.lines.forEach((element) => {
+      this.paths.push(this.buildDirection(element));
     });
 
-    return points;
+    console.log(this.paths)
+
+    this.matrix = this.initMatrix(this.maxH);
   }
+
+  @performanceLog(true)
+  runPart1(): any {
+    let mat = this.addPaths(this.paths, this.matrix);
+    return mat;
+  }
+
+  @performanceLog(true)
+  runPart2(): any { }
 
   buildDirection(line: string): Array<Direction> {
     let command: Array<Direction> = [];
@@ -67,6 +49,85 @@ export class Day extends InitAbstract {
       }
     });
     return command;
+  }
+
+  initMatrix(size: number) {
+    let matrix: Array<Array<number>> = [];
+
+    for (let i = -size; i < size + 1; i++) {
+      for (let j = -size; j < size + 1; j++) {
+        if (matrix[i] == undefined) {
+          matrix[i] = [];
+        }
+
+        if (matrix[i][j] == undefined) {
+          matrix[i][j] = 0;
+        }
+
+      }
+    }
+
+    console.log(matrix)
+    return matrix;
+  }
+
+  addPaths(paths: Array<Array<Direction>>, matrix: Array<Array<number>>) {
+    let points: Array<Geo> = [];
+
+    paths.forEach((path) => {
+      let last = { x: 0, y: 0 };
+      path.forEach((element) => {
+        console.log("Applico")
+        console.log(element);
+        switch (element.direction) {
+          case 'R':
+            for (let i = last.x; i < element.value; i++) {
+              matrix[i][last.y] += 1;
+
+              if (matrix[i][last.y] > 1) {
+                points.push({ x: i, y: last.y });
+              }
+            }
+            last = { x: last.x + element.value, y: last.y };
+            break;
+          case 'L':
+            for (let i = last.x; i < element.value; i++) {
+              matrix[last.x - i][last.y] += 1;
+
+              if (matrix[last.x - i][last.y] > 1) {
+                points.push({ x: last.x - i, y: last.y });
+              }
+            }
+            last = { x: last.x - element.value, y: last.y };
+            break;
+          case 'D':
+            for (let i = last.y; i < element.value; i++) {
+              matrix[last.x][last.y - i] += 1;
+
+              if (matrix[last.x][last.y - i] > 1) {
+                points.push({ x: last.x, y: last.y - i });
+              }
+            }
+            last = { x: last.x, y: last.y - element.value };
+            break;
+          case 'U':
+            for (let i = last.y; i < element.value; i++) {
+              matrix[last.x][last.y + i] += 1;
+
+              if (matrix[last.x][last.y + i] > 1) {
+                points.push({ x: last.x, y: last.y + i });
+              }
+            }
+            last = { x: last.x, y: last.y + element.value };
+            break;
+        }
+
+        console.log(matrix)
+      });
+
+      console.log(points)
+      return points;
+    });
   }
 }
 
