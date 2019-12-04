@@ -11,7 +11,6 @@ export class Day extends InitAbstract {
 
   reg: Array<number> = [];
   maxH = 0;
-  // points: Array<Geo> = [];
   commands: Array<Array<Direction>> = [];
 
   constructor() {
@@ -23,13 +22,25 @@ export class Day extends InitAbstract {
       this.commands.push(this.buildDirection(element));
     });
 
-    // console.log(this.commands);
+    console.log(this.commands);
   }
 
   @performanceLog(true)
-  runPart1(): any {
-    // let mat = this.addPaths(this.paths, this.matrix);
-    // return mat;
+  runPart1(): number {
+    let paths = this.buildPaths(this.commands);
+    let points = this.findPointsIntersect(paths);
+    let min = Infinity;
+
+    console.log(paths);
+    points.forEach((point) => {
+      let distance = this.manhattanDistance2D(this.startPoint, point);
+      console.log(distance, point);
+      if (min > distance) {
+        min = distance;
+      }
+    });
+
+    return min;
   }
 
   @performanceLog(true)

@@ -34,8 +34,8 @@ export abstract class InitAbstract {
   abstract runPart1(): any;
   abstract runPart2(): any;
 
-  manhattanDistance(point1: Geo, point2: Geo): number {
-    return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y) + Math.abs(point1.z - point2.z);
+  public manhattanDistance2D(point1: Geo, point2: Geo): number {
+    return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); // + Math.abs(point1.z - point2.z);
   }
 
   intersection(from1: Geo, to1: Geo, from2: Geo, to2: Geo): Geo {

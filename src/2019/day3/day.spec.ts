@@ -42,4 +42,15 @@ test('Build commands', () => {
     { x: 6, y: 5 },
     { x: 3, y: 3 },
   ]);
+
+  let start = { x: 0, y: 0 };
+  let min = Infinity;
+  points.forEach((point) => {
+    let distance = c.manhattanDistance2D(start, point);
+    if (min > distance) {
+      min = distance;
+    }
+  });
+
+  expect(min).toEqual(6);
 });
