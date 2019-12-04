@@ -49,18 +49,9 @@ export class Day extends InitAbstract {
   runPart2(): number {
     let paths = this.buildPaths(this.commands);
     let points = this.findMinPathIntersect(paths);
-    let min = Infinity;
+    
 
-    // console.log(paths);
-    points.forEach((point) => {
-      let distance = this.manhattanDistance2D({x:0, y:0}, point);
-      // console.log(distance, point);
-      if (min > distance) {
-        min = distance;
-      }
-    });
-
-    return min;
+    return 0;
   }
 
   /**
@@ -151,6 +142,7 @@ export class Day extends InitAbstract {
    * @param paths
    */
   findMinPathIntersect(paths: Array<Line>): Array<Geo> {
+    console.log(paths)
     let points = [];
     let counter = 0; //: Array < { md5: string, value: number, last: Geo } > =[]
 
@@ -163,6 +155,7 @@ export class Day extends InitAbstract {
         let point = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
         if (point !== undefined) {
           // c'è l'intersezione
+          console.log('Inter', paths[i])
           break;
         } else {
           // non c'è l'intersezione
