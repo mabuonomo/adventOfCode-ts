@@ -37,5 +37,9 @@ test('Build commands', () => {
     { p1: { x: 6, y: 3 }, p2: { x: 2, y: 3 } },
   ]);
 
-  
+  let points = c.findPointsIntersect(paths);
+  expect(points).toEqual([
+    { x: 6, y: 5 },
+    { x: 3, y: 3 },
+  ]);
 });
