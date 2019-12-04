@@ -1,8 +1,9 @@
 import { InitAbstract, Direction, Geo } from '../init.abstract';
 import { performanceLog } from 'decorators-utils-ts/dist/src';
 import deepEqual from 'deep-equal';
+import { Md5 } from 'md5-typescript';
 
-type Line = { p1: Geo; p2: Geo };
+type Line = { p1: Geo; p2: Geo; md5: string };
 
 export class Day extends InitAbstract {
   lines: Array<string>;
@@ -16,13 +17,13 @@ export class Day extends InitAbstract {
   constructor() {
     super();
 
-    this.lines = this.getLines('day3', true);
+    this.lines = this.getLines('day3', false);
 
     this.lines.forEach((element) => {
       this.commands.push(this.buildDirection(element));
     });
 
-    console.log(this.commands);
+    // console.log(this.commands);
   }
 
   @performanceLog(true)
@@ -31,10 +32,10 @@ export class Day extends InitAbstract {
     let points = this.findPointsIntersect(paths);
     let min = Infinity;
 
-    console.log(paths);
+    // console.log(paths);
     points.forEach((point) => {
       let distance = this.manhattanDistance2D(this.startPoint, point);
-      console.log(distance, point);
+      // console.log(distance, point);
       if (min > distance) {
         min = distance;
       }
@@ -67,14 +68,17 @@ export class Day extends InitAbstract {
    */
   buildPaths(commands: Array<Array<Direction>>): Array<Line> {
     let paths: Array<Line> = [];
+    let md5 = 0;
     commands.forEach((command) => {
       let last = { x: 0, y: 0 };
       for (let i = 0; i < command.length; i++) {
         let nextPoint = this.nextPoint(last, command[i]);
-        paths.push({ p1: last, p2: nextPoint });
+        paths.push({ p1: last, p2: nextPoint, md5: Md5.init(md5.toString()) });
 
         last = nextPoint;
       }
+
+      md5++;
     });
 
     return paths;
@@ -104,7 +108,7 @@ export class Day extends InitAbstract {
     let points = [];
     for (let i = 0; i < paths.length; i++) {
       for (let j = 0; j < paths.length; j++) {
-        if (i == j) {
+        if (i == j || paths[i].md5 == paths[j].md5) {
           continue;
         }
 
@@ -150,30 +154,6 @@ export class Day extends InitAbstract {
       y: from1.y + lambda * dY,
     };
   }
-
-  // /**
-  //  * function intersects(a,b,c,d, p,q,r,s)
-  //  * @param line1
-  //  * @param line2
-  //  */
-  // lineIntersects(line1: Line, line2: Line) {
-  //   var det, gamma, lambda;
-  //   det = (line1.p2.x - line1.p1.x) * (line2.p2.y - line2.p1.y) - (line2.p2.x - line2.p1.x) * (line1.p2.y - line1.p1.y);
-  //   if (det === 0) {
-  //     return false;
-  //   } else {
-  //     lambda =
-  //       ((line2.p2.y - line2.p1.y) * (line2.p2.x - line1.p1.x) +
-  //         (line2.p1.x - line2.p2.x) * (line2.p2.y - line1.p1.y)) /
-  //       det;
-  //     gamma =
-  //       ((line1.p1.y - line1.p2.y) * (line2.p2.x - line1.p1.x) +
-  //         (line1.p2.x - line1.p1.x) * (line2.p2.y - line1.p1.y)) /
-  //       det;
-
-  //     return 0 < lambda && lambda < 1 && 0 < gamma && gamma < 1;
-  //   }
-  // }
 }
 
 let day = new Day();

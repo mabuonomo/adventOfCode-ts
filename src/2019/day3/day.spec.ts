@@ -27,14 +27,14 @@ test('Build commands', () => {
 
   let paths = c.buildPaths(commands);
   expect(paths).toEqual([
-    { p1: { x: 0, y: 0 }, p2: { x: 8, y: 0 } },
-    { p1: { x: 8, y: 0 }, p2: { x: 8, y: 5 } },
-    { p1: { x: 8, y: 5 }, p2: { x: 3, y: 5 } },
-    { p1: { x: 3, y: 5 }, p2: { x: 3, y: 2 } },
-    { p1: { x: 0, y: 0 }, p2: { x: 0, y: 7 } },
-    { p1: { x: 0, y: 7 }, p2: { x: 6, y: 7 } },
-    { p1: { x: 6, y: 7 }, p2: { x: 6, y: 3 } },
-    { p1: { x: 6, y: 3 }, p2: { x: 2, y: 3 } },
+    { md5: 'cfcd208495d565ef66e7dff9f98764da', p1: { x: 0, y: 0 }, p2: { x: 8, y: 0 } },
+    { md5: 'cfcd208495d565ef66e7dff9f98764da', p1: { x: 8, y: 0 }, p2: { x: 8, y: 5 } },
+    { md5: 'cfcd208495d565ef66e7dff9f98764da', p1: { x: 8, y: 5 }, p2: { x: 3, y: 5 } },
+    { md5: 'cfcd208495d565ef66e7dff9f98764da', p1: { x: 3, y: 5 }, p2: { x: 3, y: 2 } },
+    { md5: 'c4ca4238a0b923820dcc509a6f75849b', p1: { x: 0, y: 0 }, p2: { x: 0, y: 7 } },
+    { md5: 'c4ca4238a0b923820dcc509a6f75849b', p1: { x: 0, y: 7 }, p2: { x: 6, y: 7 } },
+    { md5: 'c4ca4238a0b923820dcc509a6f75849b', p1: { x: 6, y: 7 }, p2: { x: 6, y: 3 } },
+    { md5: 'c4ca4238a0b923820dcc509a6f75849b', p1: { x: 6, y: 3 }, p2: { x: 2, y: 3 } },
   ]);
 
   let points = c.findPointsIntersect(paths);

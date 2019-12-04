@@ -21,6 +21,7 @@
     "jest-transform-stub": "^2.0.0",
     "line-reader": "^0.4.0",
     "lodash": "^4.17.15",
+    "md5-typescript": "^1.0.5",
     "n-readlines": "^1.0.0",
     "react": "^16.12.0"
   },
