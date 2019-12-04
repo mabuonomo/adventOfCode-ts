@@ -1,6 +1,5 @@
 import { InitAbstract, Direction, Geo } from '../init.abstract';
 import { performanceLog } from 'decorators-utils-ts/dist/src';
-import { valueToNode } from '@babel/types';
 
 export class Day extends InitAbstract {
   lines: Array<string>;
