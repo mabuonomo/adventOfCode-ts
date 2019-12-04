@@ -2,6 +2,7 @@ import { InitAbstract, Direction, Geo } from '../init.abstract';
 import { performanceLog } from 'decorators-utils-ts/dist/src';
 import deepEqual from 'deep-equal';
 import { Md5 } from 'md5-typescript';
+import { copyFile } from 'fs';
 
 type Line = { p1: Geo; p2: Geo; md5: string };
 
@@ -17,7 +18,7 @@ export class Day extends InitAbstract {
   constructor() {
     super();
 
-    this.lines = this.getLines('day3', false);
+    this.lines = this.getLines('day3', true);
 
     this.lines.forEach((element) => {
       this.commands.push(this.buildDirection(element));
@@ -34,7 +35,7 @@ export class Day extends InitAbstract {
 
     // console.log(paths);
     points.forEach((point) => {
-      let distance = this.manhattanDistance2D(this.startPoint, point);
+      let distance = this.manhattanDistance2D({x:0, y:0}, point);
       // console.log(distance, point);
       if (min > distance) {
         min = distance;
@@ -45,7 +46,22 @@ export class Day extends InitAbstract {
   }
 
   @performanceLog(true)
-  runPart2(): any {}
+  runPart2(): number {
+    let paths = this.buildPaths(this.commands);
+    let points = this.findMinPathIntersect(paths);
+    let min = Infinity;
+
+    // console.log(paths);
+    points.forEach((point) => {
+      let distance = this.manhattanDistance2D({x:0, y:0}, point);
+      // console.log(distance, point);
+      if (min > distance) {
+        min = distance;
+      }
+    });
+
+    return min;
+  }
 
   /**
    * Return the base input dir, value (R8)
@@ -104,9 +120,14 @@ export class Day extends InitAbstract {
     throw new Error('Not direction ' + dir.direction);
   }
 
+  /**
+   *
+   * @param paths
+   */
   findPointsIntersect(paths: Array<Line>): Array<Geo> {
     let points = [];
     for (let i = 0; i < paths.length; i++) {
+      let find = false;
       for (let j = 0; j < paths.length; j++) {
         if (i == j || paths[i].md5 == paths[j].md5) {
           continue;
@@ -122,6 +143,42 @@ export class Day extends InitAbstract {
         }
       }
     }
+    return points;
+  }
+
+  /**
+   *
+   * @param paths
+   */
+  findMinPathIntersect(paths: Array<Line>): Array<Geo> {
+    let points = [];
+    let counter = 0; //: Array < { md5: string, value: number, last: Geo } > =[]
+
+    for (let i = 0; i < paths.length; i++) {
+      for (let j = 0; j < paths.length; j++) {
+        if (i == j || paths[i].md5 == paths[j].md5) {
+          continue;
+        }
+
+        let point = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
+        if (point !== undefined) {
+          // c'è l'intersezione
+          break;
+        } else {
+          // non c'è l'intersezione
+          counter += this.manhattanDistance2D(paths[i].p1, paths[i].p2);
+          console.log(counter, this.manhattanDistance2D(paths[i].p1, paths[i].p2), paths[i]);
+        }
+      }
+
+      // if (find) {
+      //   last = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
+      //   counter += this.manhattanDistance2D(paths[i].p1, paths[i].p2);
+      //   console.log('C/ast', last);
+      // }
+    }
+
+    // console.log(counter - last);
 
     return points;
   }
