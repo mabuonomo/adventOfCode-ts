@@ -143,10 +143,11 @@ export class Day extends InitAbstract {
   findMinPathIntersect(paths: Array<Line>): Array<Geo> {
     // console.log(paths)
     let points = [];
-    let counter = [];//: Array<Array<{ md5: string, counter: number }>> = [];; //: Array < { md5: string, value: number, last: Geo } > =[]
+    let counter = []; //: Array<Array<{ md5: string, counter: number }>> = [];; //: Array < { md5: string, value: number, last: Geo } > =[]
 
     for (let i = 0; i < paths.length; i++) {
       let pointIntersect = undefined;
+      let minD = Infinity;
 
       for (let j = 0; j < paths.length; j++) {
         if (paths[i].md5 == paths[j].md5) {
@@ -154,23 +155,30 @@ export class Day extends InitAbstract {
         }
 
         pointIntersect = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
+        if (pointIntersect !== undefined) {
+          if (minD > this.manhattanDistance2D(paths[i].p2, pointIntersect)) {
+            // console.log(paths[i].p2)
+            minD = this.manhattanDistance2D(paths[i].p2, pointIntersect);
+            // console.log(minD)
+          }
+        }
       }
 
-      if(counter[paths[i].md5] == undefined) {
+      if (counter[paths[i].md5] == undefined) {
         counter[paths[i].md5] = 0;
       }
 
       if (pointIntersect === undefined) {
-        counter[paths[i].md5] += this.manhattanDistance2D(paths[i].p1, paths[i].p2);
-        console.log(paths[i].md5, this.manhattanDistance2D(paths[i].p1, paths[i].p2), 'full');
+        let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
+        counter[paths[i].md5] += dist;
+        console.log(paths[i].md5, dist, 'full');
       } else {
-        counter[paths[i].md5] += this.manhattanDistance2D(paths[i].p2, pointIntersect);
-        console.log(paths[i].md5, this.manhattanDistance2D(paths[i].p2, pointIntersect), 'less');
-        continue;
+        counter[paths[i].md5] += minD;
+        console.log(pointIntersect, paths[i].md5, minD, 'less');
       }
     }
 
-    console.log('Final', counter)
+    console.log('Final', counter);
 
     return points;
   }
