@@ -157,14 +157,14 @@ export class Day extends InitAbstract {
 
         pointIntersect = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
 
-        if(deepEqual(pointIntersect, {x:0, y:0})) {
-          pointIntersect = undefined
+        if (deepEqual(pointIntersect, { x: 0, y: 0 })) {
+          pointIntersect = undefined;
         }
 
         if (pointIntersect !== undefined) {
-          if (minD > this.manhattanDistance2D(paths[i].p2, pointIntersect)) {
+          if (minD > this.manhattanDistance2D(paths[i].p1, pointIntersect)) {
             // console.log(paths[i].p2)
-            minD = this.manhattanDistance2D(paths[i].p2, pointIntersect);
+            minD = this.manhattanDistance2D(paths[i].p1, pointIntersect);
             // console.log('MinD',minD, pointIntersect)
             break;
           }
@@ -182,8 +182,8 @@ export class Day extends InitAbstract {
           console.log(dist, paths[i].md5, 'full');
         } else {
           counter[paths[i].md5] += minD;
-          md5Finish.push(paths[i].md5)
-          console.log(minD, pointIntersect, paths[i].md5, 'less');
+          md5Finish.push(paths[i].md5);
+          console.log(minD, 'Inter', pointIntersect, 'P1', paths[i].p1, 'MD5', paths[i].md5, 'less');
           // continue;
         }
       }
