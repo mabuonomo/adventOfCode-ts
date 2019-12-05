@@ -145,21 +145,28 @@ export class Day extends InitAbstract {
     let points = [];
     let counter = []; //: Array<Array<{ md5: string, counter: number }>> = [];; //: Array < { md5: string, value: number, last: Geo } > =[]
 
+    let md5Finish = [];
     for (let i = 0; i < paths.length; i++) {
       let pointIntersect = undefined;
       let minD = Infinity;
 
-      for (let j = 0; j < paths.length; j++) {
+      for (let j = paths.length - 1; j > 0; j--) {
         if (paths[i].md5 == paths[j].md5) {
           continue;
         }
 
         pointIntersect = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
+
+        if(deepEqual(pointIntersect, {x:0, y:0})) {
+          pointIntersect = undefined
+        }
+
         if (pointIntersect !== undefined) {
           if (minD > this.manhattanDistance2D(paths[i].p2, pointIntersect)) {
             // console.log(paths[i].p2)
             minD = this.manhattanDistance2D(paths[i].p2, pointIntersect);
-            // console.log(minD)
+            // console.log('MinD',minD, pointIntersect)
+            break;
           }
         }
       }
@@ -168,13 +175,17 @@ export class Day extends InitAbstract {
         counter[paths[i].md5] = 0;
       }
 
-      if (pointIntersect === undefined) {
-        let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
-        counter[paths[i].md5] += dist;
-        console.log(paths[i].md5, dist, 'full');
-      } else {
-        counter[paths[i].md5] += minD;
-        console.log(pointIntersect, paths[i].md5, minD, 'less');
+      if (!md5Finish.includes(paths[i].md5)) {
+        if (pointIntersect === undefined) {
+          let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
+          counter[paths[i].md5] += dist;
+          console.log(dist, paths[i].md5, 'full');
+        } else {
+          counter[paths[i].md5] += minD;
+          md5Finish.push(paths[i].md5)
+          console.log(minD, pointIntersect, paths[i].md5, 'less');
+          // continue;
+        }
       }
     }
 
