@@ -177,7 +177,7 @@ export class Day extends InitAbstract {
         }
       }
 
-      console.log(counter);
+      // console.log(counter);
     }
 
     console.log('Final', counter);
