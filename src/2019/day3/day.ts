@@ -157,7 +157,7 @@ export class Day extends InitAbstract {
       for (let j = 0; j < paths.length; j++) {
         // console.log("Ssa")
 
-        if (paths[i].md5 == paths[j].md5) {
+        if (i == j || paths[i].md5 == paths[j].md5) {
           continue;
         }
 
@@ -183,11 +183,11 @@ export class Day extends InitAbstract {
         }
       }
 
-      if (counter[paths[i].md5] == undefined) {
-        counter[paths[i].md5] = 0;
-      }
-
       if (!md5Finish.includes(paths[i].md5)) {
+        if (counter[paths[i].md5] == undefined) {
+          counter[paths[i].md5] = 0;
+        }
+
         if (minD === Infinity) {
           let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
           counter[paths[i].md5] += dist;
