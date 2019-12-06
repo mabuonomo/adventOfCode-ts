@@ -48,7 +48,9 @@ export class Day extends InitAbstract {
   @performanceLog(true)
   runPart2(): number {
     let paths = this.buildPaths(this.commands);
-    let points = this.findMinPathIntersect(paths);
+    let points = this.findPointsIntersect(paths);
+
+    this.findMinPathIntersect(paths, points);
 
     return 0;
   }
@@ -140,65 +142,95 @@ export class Day extends InitAbstract {
    *
    * @param paths
    */
-  findMinPathIntersect(paths: Array<Line>): Array<Geo> {
+  findMinPathIntersect(paths: Array<Line>, points: Array<Geo>): Array<Geo> {
     // console.log(paths)
-    let points = [];
+    // let points = [];
     let counter = []; //: Array<Array<{ md5: string, counter: number }>> = [];; //: Array < { md5: string, value: number, last: Geo } > =[]
 
     let md5Finish = [];
 
     // check first path
     for (let i = 0; i < paths.length; i++) {
-      let pointIntersect = undefined;
+      if (counter[paths[i].md5] === undefined) {
+        counter[paths[i].md5] = 0;
+      }
+
+      // let pointIntersect = undefined;
       let minD = Infinity;
+      let line = paths[i];
 
-      // check second path
-      // for (let j = paths.length - 1; j > 0; j--) {
-      for (let j = 0; j < paths.length; j++) {
-        // console.log("Ssa")
+      // points.forEach(point => {
+      let collide = false;
+      let pointCollide: Geo;
+      for (let j = 0; j < points.length; j++) {
+        let point = points[j];
 
-        if (i == j || paths[i].md5 == paths[j].md5) {
-          continue;
-        }
-
-        pointIntersect = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
-
-        if (deepEqual(pointIntersect, { x: 0, y: 0 })) {
-          pointIntersect = undefined;
-        }
-
-        // console.log("Ssa")
-        // console.log(pointIntersect)
-        if (pointIntersect !== undefined) {
-          let dist = this.manhattanDistance2D(paths[i].p1, pointIntersect);
-          // let distDx = this.manhattanDistance2D(paths[i].p2, pointIntersect);
-
-          if (minD > dist) {
-            // || minD > distDx) { //this.manhattanDistance2D(paths[i].p1, pointIntersect)) {
-            // console.log(paths[i].p2)
-            minD = dist; //Math.min(distDx, distSx) // this.manhattanDistance2D(paths[i].p1, pointIntersect);
-            // console.log('MinD',minD, pointIntersect)
-            // break;
-          }
+        if (this.isPointOnLine(point, line)) {
+          collide = true;
+          pointCollide = point;
+          break;
         }
       }
 
       if (!md5Finish.includes(paths[i].md5)) {
-        if (counter[paths[i].md5] == undefined) {
-          counter[paths[i].md5] = 0;
-        }
-
-        if (minD === Infinity) {
-          let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
-          counter[paths[i].md5] += dist;
-          console.log(dist, paths[i].md5, '-full');
-        } else {
-          counter[paths[i].md5] += minD;
+        if (collide) {
+          // console.log(pointCollide)
+          counter[paths[i].md5] += this.manhattanDistance2D(pointCollide, line.p1);
           md5Finish.push(paths[i].md5);
-          console.log(minD, 'P1', paths[i].p1, 'MD5', paths[i].md5, '-less');
-          continue;
+        } else {
+          counter[paths[i].md5] += this.manhattanDistance2D(line.p1, line.p2);
         }
       }
+
+      console.log(counter);
+
+      // check second path
+      // for (let j = paths.length - 1; j > 0; j--) {
+      // for (let j = 0; j < paths.length; j++) {
+      //   // console.log("Ssa")
+
+      //   if (i == j || paths[i].md5 == paths[j].md5) {
+      //     continue;
+      //   }
+
+      //   pointIntersect = this.lineIntersects(paths[i].p1, paths[i].p2, paths[j].p1, paths[j].p2);
+
+      //   if (deepEqual(pointIntersect, { x: 0, y: 0 })) {
+      //     pointIntersect = undefined;
+      //   }
+
+      //   // console.log("Ssa")
+      //   // console.log(pointIntersect)
+      //   if (pointIntersect !== undefined) {
+      //     let dist = this.manhattanDistance2D(paths[i].p1, pointIntersect);
+      //     // let distDx = this.manhattanDistance2D(paths[i].p2, pointIntersect);
+
+      //     if (minD > dist) {
+      //       // || minD > distDx) { //this.manhattanDistance2D(paths[i].p1, pointIntersect)) {
+      //       // console.log(paths[i].p2)
+      //       minD = dist; //Math.min(distDx, distSx) // this.manhattanDistance2D(paths[i].p1, pointIntersect);
+      //       // console.log('MinD',minD, pointIntersect)
+      //       // break;
+      //     }
+      //   }
+      // }
+
+      // if (!md5Finish.includes(paths[i].md5)) {
+      //   if (counter[paths[i].md5] == undefined) {
+      //     counter[paths[i].md5] = 0;
+      //   }
+
+      //   if (minD === Infinity) {
+      //     let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
+      //     counter[paths[i].md5] += dist;
+      //     console.log(dist, paths[i].md5, '-full');
+      //   } else {
+      //     counter[paths[i].md5] += minD;
+      //     md5Finish.push(paths[i].md5);
+      //     console.log(minD, 'P1', paths[i].p1, 'MD5', paths[i].md5, '-less');
+      //     continue;
+      //   }
+      // }
     }
 
     console.log('Final', counter);
@@ -234,6 +266,16 @@ export class Day extends InitAbstract {
       x: from1.x + lambda * dX,
       y: from1.y + lambda * dY,
     };
+  }
+
+  isPointOnLine(point: Geo, line: Line) {
+    return (
+      this.manhattanDistance2D(point, line.p1) + this.manhattanDistance2D(point, line.p2) ==
+      this.manhattanDistance2D(line.p1, line.p2)
+    );
+    //     if (distance(A, C) + distance(B, C) == distance(A, B))
+    //     return true; // C is on the line.
+    // return false;
   }
 }
 
