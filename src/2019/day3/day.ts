@@ -50,9 +50,7 @@ export class Day extends InitAbstract {
     let paths = this.buildPaths(this.commands);
     let points = this.findPointsIntersect(paths);
 
-    this.findMinPathIntersect(paths, points);
-
-    return 0;
+    return this.findMinPathIntersect(paths, points);
   }
 
   /**
@@ -142,34 +140,28 @@ export class Day extends InitAbstract {
    *
    * @param paths
    */
-  findMinPathIntersect(paths: Array<Line>, points: Array<Geo>): Array<Geo> {
-    // console.log(paths)
-    // let points = [];
-    let counter = []; //: Array<Array<{ md5: string, counter: number }>> = [];; //: Array < { md5: string, value: number, last: Geo } > =[]
-
+  findMinPathIntersect(paths: Array<Line>, points: Array<Geo>): number {
+    let counter = [];
     let md5Finish = [];
 
-    // check first path
+    // check paths
     for (let i = 0; i < paths.length; i++) {
       if (counter[paths[i].md5] === undefined) {
         counter[paths[i].md5] = 0;
       }
 
-      // let pointIntersect = undefined;
       let minD = Infinity;
       let line = paths[i];
 
-      // points.forEach(point => {
       let collide = false;
-      let pointCollide: Geo;
-      // let minD
       for (let j = 0; j < points.length; j++) {
         let point = points[j];
 
-        if (this.isPointOnLine(point, line) && minD > this.manhattanDistance2D(point, line.p1)) {
+        let dist = this.manhattanDistance2D(point, line.p1);
+
+        if (this.isPointOnLine(point, line) && minD > dist) {
           collide = true;
-          pointCollide = point;
-          minD = this.manhattanDistance2D(point, line.p1);
+          minD = dist;
           break;
         }
       }
@@ -189,7 +181,12 @@ export class Day extends InitAbstract {
     console.log('Final', counter);
     // console.log('Res: ' + counter.reduce((a, b) => a + b[0], 0));
 
-    return points;
+    let tot = 0;
+    md5Finish.forEach((element) => {
+      tot += counter[element];
+    });
+
+    return tot;
   }
 
   samePoint(path1: Line, path2: Line, newPoint: Geo) {
