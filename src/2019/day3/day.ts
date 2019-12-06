@@ -164,7 +164,7 @@ export class Day extends InitAbstract {
           minD = dist;
           // break;
 
-          console.log('Point' ,point)
+          console.log('Point', point);
         }
       }
 
