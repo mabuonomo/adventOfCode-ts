@@ -162,7 +162,9 @@ export class Day extends InitAbstract {
         if (this.isPointOnLine(point, line) && minD > dist) {
           collide = true;
           minD = dist;
-          break;
+          // break;
+
+          console.log('Point' ,point)
         }
       }
 
