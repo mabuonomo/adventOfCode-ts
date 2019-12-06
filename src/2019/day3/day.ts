@@ -18,7 +18,7 @@ export class Day extends InitAbstract {
   constructor() {
     super();
 
-    this.lines = this.getLines('day3', true);
+    this.lines = this.getLines('day3', false);
 
     this.lines.forEach((element) => {
       this.commands.push(this.buildDirection(element));
