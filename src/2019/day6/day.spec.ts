@@ -5,7 +5,7 @@ test('Part 1 small', () => {
 
   let input = ['COM)B', 'B)C', 'C)D'];
 
-  expect(c.counter(input, 'COM', 0)).toBe(6);
+  expect(c.counter(input, 'COM', 0)).toBe(3);
 });
 
 test('Part 1 full', () => {
