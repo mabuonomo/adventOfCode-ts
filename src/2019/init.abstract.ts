@@ -6,7 +6,7 @@ export type Geo = { x: number; y: number; z?: number };
 export type Direction = { direction: string; value: number };
 
 export abstract class InitAbstract {
-  @performanceLog(true)
+  // @performanceLog(true)
   getLines(day: string, test: boolean = false): Array<string> {
     var data: Array<string> = [];
     let path = process.cwd() + '/src/2019/' + day + '/input.txt';
@@ -15,11 +15,11 @@ export abstract class InitAbstract {
       path = process.cwd() + '/src/2019/' + day + '/input_test.txt';
     }
 
-    if (fs.existsSync(path)) {
-      console.log('Input exists');
-    } else {
-      console.log('Input not exists');
-    }
+    // if (fs.existsSync(path)) {
+    //   console.log('Input exists');
+    // } else {
+    //   console.log('Input not exists');
+    // }
 
     const liner = new lineByLine(path);
 
@@ -33,6 +33,9 @@ export abstract class InitAbstract {
 
   abstract runPart1(): any;
   abstract runPart2(): any;
+
+  // abstract runNewPart1(input: Array<string>): any;
+  // abstract runNewPart2(input: Array<string>): any;
 
   public manhattanDistance2D(point1: Geo, point2: Geo): number {
     return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); // + Math.abs(point1.z - point2.z);
