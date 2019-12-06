@@ -195,14 +195,14 @@ export class Day extends InitAbstract {
         } else {
           counter[paths[i].md5] += minD;
           md5Finish.push(paths[i].md5);
-          console.log(minD, 'Inter', pointIntersect, 'P1', paths[i].p1, 'MD5', paths[i].md5, '-less');
+          console.log(minD, 'P1', paths[i].p1, 'MD5', paths[i].md5, '-less');
           continue;
         }
       }
     }
 
     console.log('Final', counter);
-    // console.log(counter.reduce((a,b) => a+b))
+    // console.log('Res: ' + counter.reduce((a, b) => a + b[0], 0));
 
     return points;
   }
