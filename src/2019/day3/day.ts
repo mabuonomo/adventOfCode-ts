@@ -146,11 +146,17 @@ export class Day extends InitAbstract {
     let counter = []; //: Array<Array<{ md5: string, counter: number }>> = [];; //: Array < { md5: string, value: number, last: Geo } > =[]
 
     let md5Finish = [];
+
+    // check first path
     for (let i = 0; i < paths.length; i++) {
       let pointIntersect = undefined;
       let minD = Infinity;
 
-      for (let j = paths.length - 1; j > 0; j--) {
+      // check second path
+      // for (let j = paths.length - 1; j > 0; j--) {
+      for (let j = 0; j < paths.length; j++) {
+        // console.log("Ssa")
+
         if (paths[i].md5 == paths[j].md5) {
           continue;
         }
@@ -161,12 +167,18 @@ export class Day extends InitAbstract {
           pointIntersect = undefined;
         }
 
+        // console.log("Ssa")
+        // console.log(pointIntersect)
         if (pointIntersect !== undefined) {
-          if (minD > this.manhattanDistance2D(paths[i].p1, pointIntersect)) {
+          let dist = this.manhattanDistance2D(paths[i].p1, pointIntersect);
+          // let distDx = this.manhattanDistance2D(paths[i].p2, pointIntersect);
+
+          if (minD > dist) {
+            // || minD > distDx) { //this.manhattanDistance2D(paths[i].p1, pointIntersect)) {
             // console.log(paths[i].p2)
-            minD = this.manhattanDistance2D(paths[i].p1, pointIntersect);
+            minD = dist; //Math.min(distDx, distSx) // this.manhattanDistance2D(paths[i].p1, pointIntersect);
             // console.log('MinD',minD, pointIntersect)
-            break;
+            // break;
           }
         }
       }
@@ -176,20 +188,21 @@ export class Day extends InitAbstract {
       }
 
       if (!md5Finish.includes(paths[i].md5)) {
-        if (pointIntersect === undefined) {
+        if (minD === Infinity) {
           let dist = this.manhattanDistance2D(paths[i].p1, paths[i].p2);
           counter[paths[i].md5] += dist;
-          console.log(dist, paths[i].md5, 'full');
+          console.log(dist, paths[i].md5, '-full');
         } else {
           counter[paths[i].md5] += minD;
           md5Finish.push(paths[i].md5);
-          console.log(minD, 'Inter', pointIntersect, 'P1', paths[i].p1, 'MD5', paths[i].md5, 'less');
-          // continue;
+          console.log(minD, 'Inter', pointIntersect, 'P1', paths[i].p1, 'MD5', paths[i].md5, '-less');
+          continue;
         }
       }
     }
 
     console.log('Final', counter);
+    // console.log(counter.reduce((a,b) => a+b))
 
     return points;
   }
