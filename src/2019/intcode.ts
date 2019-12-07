@@ -13,12 +13,12 @@ export class IntCode {
     for (let i = 0; i < this.registry.length; i++) {
       let res = this.execute(i, input);
 
-      console.log(this.registry);
+      //   console.log(this.registry);
 
       if (res !== undefined) return res;
     }
 
-    return 0;
+    return undefined;
   }
 
   execute(i: number, input: number): any {
@@ -70,8 +70,8 @@ export class IntCode {
       case 4:
         return this.registry[this.registry[i + 1]];
       // break;
-      // case 99:
-      //     // return this.registry[0];
+      //   case 99:
+      //       return this.registry[0];
       //     return true;
     }
 
