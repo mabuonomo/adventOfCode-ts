@@ -12,14 +12,12 @@ export class IntCode {
   }
 
   run(): number {
-    //   console.log(this.registry)
     for (let i = 0; i < this.registry.length; i++) {
-      let res = this.execute(i);
+      let result = this.execute(i);
 
-      // console.log(res)
-      if (res.res == true) return res.output;
+      if (result.res == true) return result.output;
 
-      i += res.incr;
+      i += result.incr;
     }
 
     return undefined;
@@ -34,8 +32,6 @@ export class IntCode {
 
     let param1 = op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
     let param2 = op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
-
-    // console.log(op, this.registry[i], param1, param2);
 
     switch (op.code) {
       case 1:
@@ -53,7 +49,7 @@ export class IntCode {
         return { res: true, incr: 0, output: this.input };
     }
 
-    return { res: false, incr: 0, output: undefined };
+    return { res: false, incr: 0 };
   }
 
   buildOP(i: number): IntOP {
@@ -69,7 +65,7 @@ export class IntCode {
       op = '00' + op;
     }
 
-    if (op.length === 2 && parseInt(op) == 99) {
+    if (op.length === 2) {
       op = '000' + op;
     }
 

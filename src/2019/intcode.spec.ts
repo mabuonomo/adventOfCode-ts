@@ -15,6 +15,18 @@ test('Fake test ', () => {
 
   c = new IntCode([401], 1);
   expect(c.buildOP(0)).toEqual(undefined);
+
+  c = new IntCode([1101], 1);
+  expect(c.buildOP(0)).toEqual({ first: 1, second: 1, third: 0, code: 1 });
+
+  c = new IntCode([102], 1);
+  expect(c.buildOP(0)).toEqual({ first: 1, second: 0, third: 0, code: 2 });
+
+  c = new IntCode([22], 1);
+  expect(c.buildOP(0)).toEqual(undefined);
+
+  c = new IntCode([12], 1);
+  expect(c.buildOP(0)).toEqual(undefined);
 });
 
 test('Fake test 1', () => {
