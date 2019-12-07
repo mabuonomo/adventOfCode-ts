@@ -25,3 +25,11 @@ test('Fake test 3', () => {
 
   expect(c.run(input)).toEqual(99);
 });
+
+test('Fake test 4', () => {
+    let c = new IntCode([1002, 4, 3, 4, 33, 1104, 4]);
+  
+    let input = 1;
+  
+    expect(c.run(input)).toEqual(4);
+  });
