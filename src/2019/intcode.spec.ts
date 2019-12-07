@@ -28,8 +28,10 @@ test('Fake test 4', () => {
   expect(c.run()).toEqual(4);
 });
 
-test('Fake test 4', () => {
-  let c = new IntCode([3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9], 1);
-
+test('Fake test 5', () => {
+  let c = new IntCode([3, 0, 4, 0, 99], 1);
   expect(c.run()).toEqual(1);
+
+  let d = new IntCode([3, 0, 4, 0, 99], 0);
+  expect(d.run()).toEqual(0);
 });

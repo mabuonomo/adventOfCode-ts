@@ -66,7 +66,6 @@ export class IntCode {
           this.registry[i + 3] = mul1 * mul2;
         }
         return { res: false, incr: 4, output: undefined };
-
       case 3:
         if (op.first == Mode.POSITION) {
           this.registry[this.registry[i + 1]] = this.input;
@@ -83,9 +82,7 @@ export class IntCode {
         }
         return { res: true, incr: 1, output: res };
       case 99:
-        // return this.registry[0];
-        //     return true;
-        return { res: true, incr: 0, output: this.registry[0] };
+        return { res: true, incr: 0, output: this.input }; // this.registry[0] };
     }
 
     return { res: false, incr: 0, output: undefined };
@@ -94,7 +91,7 @@ export class IntCode {
   buildOP(i: number): IntOP {
     let op = this.registry[i].toString();
 
-    if (op.length < 3) {
+    if (op.length < 2) {
       return undefined;
     }
 
@@ -104,6 +101,10 @@ export class IntCode {
 
     if (op.length === 3) {
       op = '00' + op;
+    }
+
+    if (op.length === 2) {
+      op = '000' + op;
     }
 
     return {
