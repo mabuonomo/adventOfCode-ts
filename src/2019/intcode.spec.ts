@@ -1,5 +1,22 @@
 import { IntCode } from './intcode';
 
+test('Fake test ', () => {
+  let c = new IntCode([1], 1);
+  expect(c.buildOP(0)).toEqual({ first: 0, second: 0, third: 0, code: 1 });
+
+  c = new IntCode([101], 1);
+  expect(c.buildOP(0)).toEqual({ first: 1, second: 0, third: 0, code: 1 });
+
+  c = new IntCode([99], 1);
+  expect(c.buildOP(0)).toEqual({ first: 0, second: 0, third: 0, code: 99 });
+
+  c = new IntCode([499], 1);
+  expect(c.buildOP(0)).toEqual(undefined);
+
+  c = new IntCode([401], 1);
+  expect(c.buildOP(0)).toEqual(undefined);
+});
+
 test('Fake test 1', () => {
   let c = new IntCode([1002, 4, 3, 4, 33], 1);
 
