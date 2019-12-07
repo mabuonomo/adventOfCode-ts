@@ -5,9 +5,15 @@ export class IntCode {
     this.registry = registry;
   }
 
+  getRegistry() {
+    return this.registry;
+  }
+
   run(input: number): number {
     for (let i = 0; i < this.registry.length; i++) {
       let res = this.execute(i, input);
+
+      console.log(this.registry);
 
       if (res !== undefined) return res;
     }
@@ -32,15 +38,17 @@ export class IntCode {
     }
 
     if (op.second == Mode.POSITION) {
-      param2 = this.registry[this.registry[i + 1]];
+      param2 = this.registry[this.registry[i + 2]];
     } else {
-      param2 = this.registry[i + 1];
+      param2 = this.registry[i + 2];
     }
+
+    // console.log(param1, param2)
 
     switch (op.code) {
       case 1:
-        let add1 = param1; //this.registry[this.registry[i + 1]];
-        let add2 = param2; //this.registry[this.registry[i + 2]];
+        let add1 = param1;
+        let add2 = param2;
         if (op.third == Mode.POSITION) {
           this.registry[this.registry[i + 3]] = add1 + add2;
         } else {
@@ -48,8 +56,8 @@ export class IntCode {
         }
         break;
       case 2:
-        let mul1 = param1; //this.registry[this.registry[i + 1]];
-        let mul2 = param2; //this.registry[this.registry[i + 2]];
+        let mul1 = param1;
+        let mul2 = param2;
         if (op.third == Mode.POSITION) {
           this.registry[this.registry[i + 3]] = mul1 * mul2;
         } else {
