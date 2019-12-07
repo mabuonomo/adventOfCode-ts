@@ -19,8 +19,8 @@ class Day extends InitAbstract {
 
   @performanceLog(true)
   runPart1(): number {
-    let c = new IntCode(this.reg);
-    return c.run(1);
+    let c = new IntCode(this.reg, 1);
+    return c.run();
   }
 
   @performanceLog(true)
