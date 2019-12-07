@@ -15,17 +15,19 @@ export class IntCode {
     for (let i = 0; i < this.registry.length; i++) {
       let res = this.execute(i);
 
-      if (res !== undefined) return res;
+      if (res.output !== undefined) return res.output;
+
+      i += res.incr;
     }
 
     return undefined;
   }
 
-  execute(i: number): any {
+  execute(i: number): Result {
     let op = this.buildOP(i);
 
     if (op == undefined) {
-      return;
+      return { res: false, incr: 0, output: undefined };
     }
 
     let param1 = 0;
@@ -54,7 +56,7 @@ export class IntCode {
         } else {
           this.registry[i + 3] = add1 + add2;
         }
-        break;
+        return { res: false, incr: 4, output: undefined };
       case 2:
         let mul1 = param1;
         let mul2 = param2;
@@ -63,27 +65,30 @@ export class IntCode {
         } else {
           this.registry[i + 3] = mul1 * mul2;
         }
-        break;
+        return { res: false, incr: 4, output: undefined };
+
       case 3:
         if (op.first == Mode.POSITION) {
           this.registry[this.registry[i + 1]] = this.input;
         } else {
           this.registry[i + 1] = this.input;
         }
-        break;
+        return { res: false, incr: 1, output: undefined };
       case 4:
+        let res = 0;
         if (op.first == Mode.POSITION) {
-          return this.registry[this.registry[i + 1]];
+          res = this.registry[this.registry[i + 1]];
         } else {
-          return this.registry[i + 1];
+          res = this.registry[i + 1];
         }
-      // break;
+        return { res: true, incr: 1, output: res };
       case 99:
-        return this.registry[0];
-      //     return true;
+        // return this.registry[0];
+        //     return true;
+        return { res: true, incr: 0, output: this.registry[0] };
     }
 
-    return undefined;
+    return { res: false, incr: 0, output: undefined };
   }
 
   buildOP(i: number): IntOP {
@@ -122,3 +127,5 @@ enum Mode {
   POSITION, // by address
   IMMEDIATE, // by value
 }
+
+type Result = { res: boolean; incr: number; output: number };
