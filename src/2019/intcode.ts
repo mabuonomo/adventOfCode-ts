@@ -1,6 +1,7 @@
 export class IntCode {
   registry: Array<number>;
   input: number;
+  output: number;
 
   constructor(registry: Array<number>, input: number) {
     this.registry = registry;
@@ -15,7 +16,8 @@ export class IntCode {
     for (let i = 0; i < this.registry.length; i++) {
       let result = this.execute(i);
 
-      if (result.res == true) return result.output;
+      // console.log(this.getRegistry())
+      if (result.res == true) return this.output;
 
       i += result.incr;
     }
@@ -27,7 +29,7 @@ export class IntCode {
     let op = this.buildOP(i);
 
     if (op == undefined) {
-      return { res: false, incr: 0, output: undefined };
+      return { res: false, incr: 0 };
     }
 
     let param1 = op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
@@ -36,17 +38,18 @@ export class IntCode {
     switch (op.code) {
       case 1:
         this.registry[this.registry[i + 3]] = param1 + param2;
-        return { res: false, incr: 4 };
+        return { res: false, incr: 3 };
       case 2:
         this.registry[this.registry[i + 3]] = param1 * param2;
-        return { res: false, incr: 4 };
+        return { res: false, incr: 3 };
       case 3:
         this.registry[this.registry[i + 1]] = this.input;
         return { res: false, incr: 1 };
       case 4:
-        return { res: true, incr: 0, output: param1 };
+        this.output = param1;
+        return { res: false, incr: 1 };
       case 99:
-        return { res: true, incr: 0, output: this.input };
+        return { res: true, incr: 0 };
     }
 
     return { res: false, incr: 0 };
@@ -99,4 +102,4 @@ enum Mode {
   IMMEDIATE, // by value
 }
 
-type Result = { res: boolean; incr: number; output?: number };
+type Result = { res: boolean; incr: number };
