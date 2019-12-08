@@ -160,3 +160,73 @@ test('Part 1 full', () => {
 
   expect(output).toEqual(43210);
 });
+
+test('Part 2 full', () => {
+  let istrInit = [
+    3,
+    26,
+    1001,
+    26,
+    -4,
+    26,
+    3,
+    27,
+    1002,
+    27,
+    2,
+    27,
+    1,
+    27,
+    26,
+    27,
+    4,
+    27,
+    1001,
+    28,
+    -1,
+    28,
+    1005,
+    28,
+    6,
+    99,
+    0,
+    0,
+    5,
+  ];
+
+  let nApl = 5;
+  let input = 0;
+  let output = -Infinity;
+
+  permutation([5, 6, 7, 8, 9]).forEach((phase) => {
+    input = 0;
+
+    let istr = Object.assign([], istrInit);
+    let machines = [
+      new IntCode(istr, phase[0], 0),
+      new IntCode(istr, phase[1], 0),
+      new IntCode(istr, phase[2], 0),
+      new IntCode(istr, phase[3], 0),
+      new IntCode(istr, phase[4], 0),
+    ];
+
+    while (true) {
+      let res: { final: boolean; counter: number };
+      for (let i = 0; i < nApl; i++) {
+        machines[i].setInput(input);
+        res = machines[i].runLoop();
+        input = res.counter;
+      }
+
+      if (output < input) {
+        output = input;
+      }
+
+      if (res.final) {
+        break;
+      }
+    }
+  });
+
+  expect(output).toEqual(139629729);
+});

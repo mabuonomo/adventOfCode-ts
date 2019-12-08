@@ -5,6 +5,7 @@ export class IntCode {
   input: number;
   phase?: number;
   output: number;
+  lastIndex: number;
 
   constructor(registry: Array<number>, input: number, phase?: number) {
     this.registry = registry;
@@ -30,14 +31,39 @@ export class IntCode {
     return undefined;
   }
 
+  runLoop(): { final: boolean; counter: number } {
+    if (this.lastIndex == undefined) {
+      this.lastIndex = 0;
+    }
+
+    for (let i = this.lastIndex; i < this.registry.length; i++) {
+      let result = this.execute(i);
+
+      if (result.res == true) return { final: true, counter: this.output };
+
+      if (result.jump === undefined) i += result.incr;
+      else i = result.jump - 1;
+
+      if (result.pass == true) {
+        this.lastIndex = i + 1;
+        return { final: false, counter: this.output };
+      }
+    }
+
+    this.lastIndex = 0;
+    return this.runLoop();
+  }
+
+  setInput(val: number) {
+    this.input = val;
+  }
+
   getInput() {
-    let res = this.input; //Object.assign(number, this.input)
-    // console.log(this.phase)
+    let res = this.input;
     if (this.phase != undefined) {
       this.input = this.phase;
     }
 
-    // console.log(res)
     return res;
   }
 
@@ -63,7 +89,7 @@ export class IntCode {
         return { res: false, incr: 1 };
       case 4:
         this.output = param1;
-        return { res: false, incr: 1 };
+        return { res: false, incr: 1, pass: true };
       case 5: // jump if true
         if (param1 !== 0) {
           return { res: false, incr: 0, jump: param2 };
@@ -142,4 +168,4 @@ enum Mode {
   IMMEDIATE, // by value
 }
 
-type Result = { res: boolean; incr: number; jump?: number };
+type Result = { res: boolean; incr: number; jump?: number; pass?: boolean };
