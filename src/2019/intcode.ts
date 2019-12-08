@@ -51,6 +51,7 @@ export class IntCode {
         return { final: false, counter: this.output };
       }
 
+      // jump
       if (result.jump === undefined) i += result.incr;
       else i = result.jump - 1;
     }
