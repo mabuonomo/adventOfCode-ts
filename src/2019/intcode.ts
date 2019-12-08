@@ -16,10 +16,10 @@ export class IntCode {
     for (let i = 0; i < this.registry.length; i++) {
       let result = this.execute(i);
 
-      // console.log(this.getRegistry())
       if (result.res == true) return this.output;
 
-      i += result.incr;
+      if (result.jump === undefined) i += result.incr;
+      else i = result.jump - 1;
     }
 
     return undefined;
@@ -32,8 +32,8 @@ export class IntCode {
       return { res: false, incr: 0 };
     }
 
-    let param1 = op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
-    let param2 = op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
+    let param1: number = op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
+    let param2: number = op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
 
     switch (op.code) {
       case 1:
@@ -48,6 +48,30 @@ export class IntCode {
       case 4:
         this.output = param1;
         return { res: false, incr: 1 };
+      case 5: // jump if true
+        if (param1 !== 0) {
+          return { res: false, incr: 0, jump: param2 };
+        }
+        return { res: false, incr: 2 };
+      case 6: // jump if false
+        if (param1 === 0) {
+          return { res: false, incr: 0, jump: param2 };
+        }
+        return { res: false, incr: 2 };
+      case 7: // less than
+        if (param1 < param2) {
+          this.registry[this.registry[i + 3]] = 1;
+        } else {
+          this.registry[this.registry[i + 3]] = 0;
+        }
+        return { res: false, incr: 3 };
+      case 8: // equal
+        if (param1 == param2) {
+          this.registry[this.registry[i + 3]] = 1;
+        } else {
+          this.registry[this.registry[i + 3]] = 0;
+        }
+        return { res: false, incr: 3 };
       case 99:
         return { res: true, incr: 0 };
     }
@@ -58,7 +82,7 @@ export class IntCode {
   buildOP(i: number): IntOP {
     let op = this.registry[i].toString();
 
-    if (![1, 2, 3, 4, 99].includes(parseInt(op.substr(-2)))) return undefined;
+    if (![1, 2, 3, 4, 99, 5, 6, 7, 8].includes(parseInt(op.substr(-2)))) return undefined;
 
     if (op.length === 4 && parseInt(op.charAt(0)) < 2 && parseInt(op.charAt(1)) < 2) {
       op = '0' + op;
@@ -102,4 +126,4 @@ enum Mode {
   IMMEDIATE, // by value
 }
 
-type Result = { res: boolean; incr: number };
+type Result = { res: boolean; incr: number; jump?: number };

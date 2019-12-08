@@ -19,13 +19,14 @@ class Day extends InitAbstract {
 
   @performanceLog(true)
   runPart1(): number {
-    let c = new IntCode(this.reg, 1);
+    let c = new IntCode(Object.assign([], this.reg), 1);
     return c.run();
   }
 
   @performanceLog(true)
   runPart2(): number {
-    return 0;
+    let c = new IntCode(Object.assign([], this.reg), 5);
+    return c.run();
   }
 }
 
