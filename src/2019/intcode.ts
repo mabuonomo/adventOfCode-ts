@@ -6,6 +6,7 @@ export class IntCode {
   phase?: number;
   output: number;
   lastIndex: number;
+  started: boolean;
 
   constructor(registry: Array<number>, input: number, phase?: number) {
     this.registry = registry;
@@ -36,26 +37,39 @@ export class IntCode {
       this.lastIndex = 0;
     }
 
+    // console.log(this.lastIndex)
+
     for (let i = this.lastIndex; i < this.registry.length; i++) {
       let result = this.execute(i);
 
+      // halt
       if (result.res == true) return { final: true, counter: this.output };
+
+      // output and continue
+      if (result.pass == true) {
+        this.lastIndex = i + result.incr;
+        return { final: false, counter: this.output };
+      }
 
       if (result.jump === undefined) i += result.incr;
       else i = result.jump - 1;
-
-      if (result.pass == true) {
-        this.lastIndex = i + 1;
-        return { final: false, counter: this.output };
-      }
     }
 
+    // console.log('*')
     this.lastIndex = 0;
     return this.runLoop();
   }
 
+  setStarted() {
+    this.started = true;
+  }
+
   setInput(val: number) {
     this.input = val;
+
+    if (this.started == true) {
+      this.phase = undefined;
+    }
   }
 
   getInput() {
@@ -63,6 +77,8 @@ export class IntCode {
     if (this.phase != undefined) {
       this.input = this.phase;
     }
+
+    this.setStarted();
 
     return res;
   }
@@ -85,9 +101,9 @@ export class IntCode {
         this.registry[this.registry[i + 3]] = param1 * param2;
         return { res: false, incr: 3 };
       case 3: // input
-        this.registry[this.registry[i + 1]] = this.getInput(); //this.input;
+        this.registry[this.registry[i + 1]] = this.getInput();
         return { res: false, incr: 1 };
-      case 4:
+      case 4: // output
         this.output = param1;
         return { res: false, incr: 1, pass: true };
       case 5: // jump if true

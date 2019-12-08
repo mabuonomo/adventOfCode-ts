@@ -201,20 +201,22 @@ test('Part 2 full', () => {
   permutation([5, 6, 7, 8, 9]).forEach((phase) => {
     input = 0;
 
-    let istr = Object.assign([], istrInit);
     let machines = [
-      new IntCode(istr, phase[0], 0),
-      new IntCode(istr, phase[1], 0),
-      new IntCode(istr, phase[2], 0),
-      new IntCode(istr, phase[3], 0),
-      new IntCode(istr, phase[4], 0),
+      new IntCode(Object.assign([], istrInit), phase[0], 0),
+      new IntCode(Object.assign([], istrInit), phase[1], 0),
+      new IntCode(Object.assign([], istrInit), phase[2], 0),
+      new IntCode(Object.assign([], istrInit), phase[3], 0),
+      new IntCode(Object.assign([], istrInit), phase[4], 0),
     ];
 
     while (true) {
       let res: { final: boolean; counter: number };
+
+      // run all machines
       for (let i = 0; i < nApl; i++) {
         machines[i].setInput(input);
         res = machines[i].runLoop();
+
         input = res.counter;
       }
 
