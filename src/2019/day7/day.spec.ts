@@ -198,37 +198,36 @@ test('Part 2 full', () => {
   let input = 0;
   let output = -Infinity;
 
-  permutation([5, 6, 7, 8, 9]).forEach((phase) => {
-    input = 0;
+  let phase = [9, 8, 7, 6, 5];
+  input = 0;
 
-    let machines = [
-      new IntCode(Object.assign([], istrInit), phase[0], 0),
-      new IntCode(Object.assign([], istrInit), phase[1], 0),
-      new IntCode(Object.assign([], istrInit), phase[2], 0),
-      new IntCode(Object.assign([], istrInit), phase[3], 0),
-      new IntCode(Object.assign([], istrInit), phase[4], 0),
-    ];
+  let machines = [
+    new IntCode(Object.assign([], istrInit), phase[0], 0),
+    new IntCode(Object.assign([], istrInit), phase[1], 0),
+    new IntCode(Object.assign([], istrInit), phase[2], 0),
+    new IntCode(Object.assign([], istrInit), phase[3], 0),
+    new IntCode(Object.assign([], istrInit), phase[4], 0),
+  ];
 
-    while (true) {
-      let res: { final: boolean; counter: number };
+  while (true) {
+    let res: { final: boolean; counter: number };
 
-      // run all machines
-      for (let i = 0; i < nApl; i++) {
-        machines[i].setInput(input);
-        res = machines[i].runLoop();
+    // run all machines
+    for (let i = 0; i < nApl; i++) {
+      machines[i].setInput(input);
+      res = machines[i].runLoop();
 
-        input = res.counter;
-      }
-
-      if (output < input) {
-        output = input;
-      }
-
-      if (res.final) {
-        break;
-      }
+      input = res.counter;
     }
-  });
+
+    if (output < input) {
+      output = input;
+    }
+
+    if (res.final) {
+      break;
+    }
+  }
 
   expect(output).toEqual(139629729);
 });

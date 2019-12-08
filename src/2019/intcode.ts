@@ -66,9 +66,8 @@ export class IntCode {
   }
 
   setInput(val: number) {
-    this.input = val;
-
     if (this.started == true) {
+      this.input = val;
       this.phase = undefined;
     }
   }
@@ -131,7 +130,7 @@ export class IntCode {
           this.registry[this.registry[i + 3]] = 0;
         }
         return { res: false, incr: 3 };
-      case 99:
+      case 99: // halt
         return { res: true, incr: 0 };
     }
 
