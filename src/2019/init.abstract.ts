@@ -41,6 +41,14 @@ export abstract class InitAbstract {
     return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); // + Math.abs(point1.z - point2.z);
   }
 
+  permutation = (ar: number[]): number[][] =>
+    ar.length === 1
+      ? ar
+      : ar.reduce((ac, _, i) => {
+          this.permutation([...ar.slice(0, i), ...ar.slice(i + 1)]).map((v) => ac.push([].concat(ar[i], v)));
+          return ac;
+        }, []);
+
   intersection(from1: Geo, to1: Geo, from2: Geo, to2: Geo): Geo {
     const dX: number = to1.x - from1.x;
     const dY: number = to1.y - from1.y;

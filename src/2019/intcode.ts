@@ -1,11 +1,16 @@
+import { number } from 'prop-types';
+
 export class IntCode {
   registry: Array<number>;
   input: number;
+  phase?: number;
   output: number;
 
-  constructor(registry: Array<number>, input: number) {
+  constructor(registry: Array<number>, input: number, phase?: number) {
     this.registry = registry;
     this.input = input;
+
+    if (phase != undefined) this.phase = phase;
   }
 
   getRegistry() {
@@ -25,6 +30,17 @@ export class IntCode {
     return undefined;
   }
 
+  getInput() {
+    let res = this.input; //Object.assign(number, this.input)
+    // console.log(this.phase)
+    if (this.phase != undefined) {
+      this.input = this.phase;
+    }
+
+    // console.log(res)
+    return res;
+  }
+
   execute(i: number): Result {
     let op = this.buildOP(i);
 
@@ -36,14 +52,14 @@ export class IntCode {
     let param2: number = op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
 
     switch (op.code) {
-      case 1:
+      case 1: // add
         this.registry[this.registry[i + 3]] = param1 + param2;
         return { res: false, incr: 3 };
-      case 2:
+      case 2: // mul
         this.registry[this.registry[i + 3]] = param1 * param2;
         return { res: false, incr: 3 };
-      case 3:
-        this.registry[this.registry[i + 1]] = this.input;
+      case 3: // input
+        this.registry[this.registry[i + 1]] = this.getInput(); //this.input;
         return { res: false, incr: 1 };
       case 4:
         this.output = param1;
