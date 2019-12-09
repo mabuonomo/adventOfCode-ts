@@ -88,19 +88,30 @@ export class IntCode {
 
   getParam(i: number, mode: Mode, incr: number) {
     switch (mode) {
-      case Mode.POSITION: // 0
-        return this.registry[this.registry[i + incr]] || 0;
-      case Mode.IMMEDIATE: // 1
+      case Mode.POSITION: {
+        // 0
+        let address = this.registry[i + incr];
+        if (address < 0) address = 0;
+
+        return this.registry[address] || 0;
+      }
+      case Mode.IMMEDIATE: {
+        // 1
+        let address = i + incr;
+        if (address < 0) address = 0;
+
         return this.registry[i + incr] || 0;
-      case Mode.RELATIVE: // 2
-        return this.registry[this.base + this.registry[i + incr]] || 0;
+      }
+      case Mode.RELATIVE: {
+        // 2
+        let address = this.base + this.registry[i + incr];
+        if (address < 0) address = 0;
+        return this.registry[address] || 0;
+      }
     }
   }
 
   writeRegistry(i: number, mode: Mode, incr: number, value: number) {
-
-    // this.base = this.base < 0 ? 0 : this.base
-
     let address = (mode == Mode.RELATIVE ? this.base : 0) + this.registry[i + incr];
     this.registry[address] = value;
   }
@@ -153,7 +164,7 @@ export class IntCode {
         }
         return { res: false, incr: 3 };
       case 9: // base
-        this.base = param1;
+        this.base += param1;
         return { res: false, incr: 1 };
       case 99: // halt
         return { res: true, incr: 0 };

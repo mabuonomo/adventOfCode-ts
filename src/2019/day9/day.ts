@@ -34,7 +34,8 @@ export class Day extends InitAbstract {
 
   @performanceLog(true)
   runPart2(): number {
-    return 0;
+    let c = new IntCode(Object.assign([], this.reg), 2);
+    return c.run();
   }
 }
 

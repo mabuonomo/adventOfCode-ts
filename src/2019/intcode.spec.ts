@@ -130,7 +130,7 @@ test('Test base op code 9', () => {
   let inp = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99];
 
   let e = new IntCode(inp, 0);
-  expect(e.run()).toEqual(109);
+  expect(e.run()).toEqual(99);
 });
 
 test('Test base op code 9', () => {
