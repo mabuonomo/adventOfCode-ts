@@ -109,20 +109,17 @@ export class IntCode {
       return { res: false, incr: 0 };
     }
 
-    let param1: number = this.getParam(i, op.first, 1); // op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
-    let param2: number = this.getParam(i, op.second, 2); // op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
+    let param1: number = this.getParam(i, op.first, 1);
+    let param2: number = this.getParam(i, op.second, 2);
 
     switch (op.code) {
       case 1: // add
-        // this.registry[this.registry[i + 3]] = param1 + param2;
         this.writeRegistry(i, op.third, 3, param1 + param2);
         return { res: false, incr: 3 };
       case 2: // mul
-        // this.registry[this.registry[i + 3]] = param1 * param2;
         this.writeRegistry(i, op.third, 3, param1 * param2);
         return { res: false, incr: 3 };
       case 3: // input
-        // this.registry[this.registry[i + 1]] = this.getInput();
         this.writeRegistry(i, op.first, 1, this.getInput());
         return { res: false, incr: 1 };
       case 4: // output
@@ -140,20 +137,16 @@ export class IntCode {
         return { res: false, incr: 2 };
       case 7: // less than
         if (param1 < param2) {
-          // this.registry[this.registry[i + 3]] = 1;
           this.writeRegistry(i, op.third, 3, 1);
         } else {
           this.writeRegistry(i, op.third, 3, 0);
-          // this.registry[this.registry[i + 3]] = 0;
         }
         return { res: false, incr: 3 };
       case 8: // equal
         if (param1 == param2) {
-          // this.registry[this.registry[i + 3]] = 1;
           this.writeRegistry(i, op.third, 3, 1);
         } else {
           this.writeRegistry(i, op.third, 3, 0);
-          // this.registry[this.registry[i + 3]] = 0;
         }
         return { res: false, incr: 3 };
       case 9: // base
