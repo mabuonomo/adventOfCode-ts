@@ -98,6 +98,9 @@ export class IntCode {
   }
 
   writeRegistry(i: number, mode: Mode, incr: number, value: number) {
+
+    this.base = this.base < 0 ? 0 : this.base
+
     let address = (mode == Mode.RELATIVE ? this.base : 0) + this.registry[i + incr];
     this.registry[address] = value;
   }
