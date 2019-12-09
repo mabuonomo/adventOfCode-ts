@@ -7,12 +7,15 @@ export class IntCode {
   output: number;
   lastIndex: number;
   started: boolean;
+  base: number;
 
   constructor(registry: Array<number>, input: number, phase?: number) {
     this.registry = registry;
     this.input = input;
 
     if (phase != undefined) this.phase = phase;
+
+    this.base = 0;
   }
 
   getRegistry() {
@@ -83,6 +86,22 @@ export class IntCode {
     return res;
   }
 
+  getParam(i: number, mode: Mode, incr: number) {
+    switch (mode) {
+      case Mode.POSITION: // 0
+        return this.registry[this.registry[i + incr]] || 0;
+      case Mode.IMMEDIATE: // 1
+        return this.registry[i + incr] || 0;
+      case Mode.RELATIVE: // 2
+        return this.registry[this.base + this.registry[i + incr]] || 0;
+    }
+  }
+
+  writeRegistry(i: number, mode: Mode, incr: number, value: number) {
+    let address = (mode == Mode.RELATIVE ? this.base : 0) + this.registry[i + incr];
+    this.registry[address] = value;
+  }
+
   execute(i: number): Result {
     let op = this.buildOP(i);
 
@@ -90,18 +109,21 @@ export class IntCode {
       return { res: false, incr: 0 };
     }
 
-    let param1: number = op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
-    let param2: number = op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
+    let param1: number = this.getParam(i, op.first, 1); // op.first == Mode.POSITION ? this.registry[this.registry[i + 1]] : this.registry[i + 1];
+    let param2: number = this.getParam(i, op.second, 2); // op.second == Mode.POSITION ? this.registry[this.registry[i + 2]] : this.registry[i + 2];
 
     switch (op.code) {
       case 1: // add
-        this.registry[this.registry[i + 3]] = param1 + param2;
+        // this.registry[this.registry[i + 3]] = param1 + param2;
+        this.writeRegistry(i, op.third, 3, param1 + param2);
         return { res: false, incr: 3 };
       case 2: // mul
-        this.registry[this.registry[i + 3]] = param1 * param2;
+        // this.registry[this.registry[i + 3]] = param1 * param2;
+        this.writeRegistry(i, op.third, 3, param1 * param2);
         return { res: false, incr: 3 };
       case 3: // input
-        this.registry[this.registry[i + 1]] = this.getInput();
+        // this.registry[this.registry[i + 1]] = this.getInput();
+        this.writeRegistry(i, op.first, 1, this.getInput());
         return { res: false, incr: 1 };
       case 4: // output
         this.output = param1;
@@ -118,18 +140,25 @@ export class IntCode {
         return { res: false, incr: 2 };
       case 7: // less than
         if (param1 < param2) {
-          this.registry[this.registry[i + 3]] = 1;
+          // this.registry[this.registry[i + 3]] = 1;
+          this.writeRegistry(i, op.third, 3, 1);
         } else {
-          this.registry[this.registry[i + 3]] = 0;
+          this.writeRegistry(i, op.third, 3, 0);
+          // this.registry[this.registry[i + 3]] = 0;
         }
         return { res: false, incr: 3 };
       case 8: // equal
         if (param1 == param2) {
-          this.registry[this.registry[i + 3]] = 1;
+          // this.registry[this.registry[i + 3]] = 1;
+          this.writeRegistry(i, op.third, 3, 1);
         } else {
-          this.registry[this.registry[i + 3]] = 0;
+          this.writeRegistry(i, op.third, 3, 0);
+          // this.registry[this.registry[i + 3]] = 0;
         }
         return { res: false, incr: 3 };
+      case 9: // base
+        this.base = param1;
+        return { res: false, incr: 1 };
       case 99: // halt
         return { res: true, incr: 0 };
     }
@@ -140,13 +169,13 @@ export class IntCode {
   buildOP(i: number): IntOP {
     let op = this.registry[i].toString();
 
-    if (![1, 2, 3, 4, 99, 5, 6, 7, 8].includes(parseInt(op.substr(-2)))) return undefined;
+    if (![1, 2, 3, 4, 99, 5, 6, 7, 8, 9].includes(parseInt(op.substr(-2)))) return undefined;
 
-    if (op.length === 4 && parseInt(op.charAt(0)) < 2 && parseInt(op.charAt(1)) < 2) {
+    if (op.length === 4 && parseInt(op.charAt(0)) < 3 && parseInt(op.charAt(1)) < 3) {
       op = '0' + op;
     }
 
-    if (op.length === 3 && parseInt(op.charAt(0)) < 2) {
+    if (op.length === 3 && parseInt(op.charAt(0)) < 3) {
       op = '00' + op;
     }
 
@@ -173,6 +202,8 @@ export class IntCode {
   getMode(n: number) {
     if (n == 0) return Mode.POSITION;
 
+    if (n == 2) return Mode.RELATIVE;
+
     return Mode.IMMEDIATE;
   }
 }
@@ -182,6 +213,7 @@ type IntOP = { third: Mode; second: Mode; first: Mode; code: number };
 enum Mode {
   POSITION, // by address
   IMMEDIATE, // by value
+  RELATIVE, //
 }
 
 type Result = { res: boolean; incr: number; jump?: number; pass?: boolean };
