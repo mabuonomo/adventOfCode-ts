@@ -16,6 +16,7 @@ export class IntCode {
     if (phase != undefined) this.phase = phase;
 
     this.base = 0;
+    this.lastIndex = 0;
   }
 
   getRegistry() {
@@ -40,8 +41,6 @@ export class IntCode {
       this.lastIndex = 0;
     }
 
-    // console.log(this.lastIndex)
-
     for (let i = this.lastIndex; i < this.registry.length; i++) {
       let result = this.execute(i);
 
@@ -59,7 +58,7 @@ export class IntCode {
       else i = result.jump - 1;
     }
 
-    // console.log('*')
+    console.log('*');
     this.lastIndex = 0;
     return this.runLoop();
   }
@@ -73,15 +72,22 @@ export class IntCode {
       this.input = val;
       this.phase = undefined;
     }
+    // console.log(val, this.input)
+
+    return this;
   }
 
   getInput() {
     let res = this.input;
+    // console.log('*', res)
+
     if (this.phase != undefined) {
       this.input = this.phase;
     }
 
     this.setStarted();
+
+    // console.log('*', res)
 
     return res;
   }

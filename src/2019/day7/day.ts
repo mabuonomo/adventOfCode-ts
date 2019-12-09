@@ -59,7 +59,43 @@ export class Day extends InitAbstract {
 
   @performanceLog(true)
   runPart2(): number {
-    return 0;
+    let nApl = 5;
+    let input = 0;
+    let output = -Infinity;
+
+    let phases = [5, 6, 7, 8, 9];
+    this.permutation(phases).forEach((phase) => {
+      let machines = [
+        new IntCode(Object.assign([], this.reg), phase[0], input),
+        new IntCode(Object.assign([], this.reg), phase[1]),
+        new IntCode(Object.assign([], this.reg), phase[2]),
+        new IntCode(Object.assign([], this.reg), phase[3]),
+        new IntCode(Object.assign([], this.reg), phase[4]),
+      ];
+
+      input = 0;
+      while (true) {
+        let res: { final: boolean; counter: number };
+
+        // run all machines
+        for (let i = 0; i < nApl; i++) {
+          machines[i].setInput(input);
+          res = machines[i].runLoop();
+
+          input = res.counter; // output
+        }
+
+        if (output < input) {
+          output = input;
+        }
+
+        if (res.final) {
+          break;
+        }
+      }
+    });
+
+    return output;
   }
 }
 

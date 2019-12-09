@@ -199,27 +199,32 @@ test('Part 2 full', () => {
   let output = -Infinity;
 
   let phase = [9, 8, 7, 6, 5];
-  input = 0;
 
   let machines = [
-    new IntCode(Object.assign([], istrInit), phase[0], 0),
-    new IntCode(Object.assign([], istrInit), phase[1], 0),
-    new IntCode(Object.assign([], istrInit), phase[2], 0),
-    new IntCode(Object.assign([], istrInit), phase[3], 0),
-    new IntCode(Object.assign([], istrInit), phase[4], 0),
+    new IntCode(Object.assign([], istrInit), phase[0]),
+    new IntCode(Object.assign([], istrInit), phase[1]),
+    new IntCode(Object.assign([], istrInit), phase[2]),
+    new IntCode(Object.assign([], istrInit), phase[3]),
+    new IntCode(Object.assign([], istrInit), phase[4]),
   ];
 
+  // input = 0;
   while (true) {
     let res: { final: boolean; counter: number };
 
     // run all machines
     for (let i = 0; i < nApl; i++) {
-      machines[i].setInput(input);
-      res = machines[i].runLoop();
+      // console.log(i, input)
+      res = machines[i].setInput(input).runLoop();
 
       input = res.counter;
+
+      if (res.final) {
+        break;
+      }
     }
 
+    // only E has output
     if (output < input) {
       output = input;
     }
