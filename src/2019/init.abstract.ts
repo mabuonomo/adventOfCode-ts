@@ -75,6 +75,15 @@ export abstract class InitAbstract {
       this.manhattanDistance2D(line.p1, line.p2)
     );
   }
+
+  isPointOnLineV2(c: Geo, line: Line): boolean {
+    // if AC is vertical
+    if (line.p1.x == c.x) return line.p2.x == c.x;
+    // if AC is horizontal
+    if (line.p1.y == c.y) return line.p2.y == c.y;
+    // match the gradients
+    return (line.p1.x - c.x) * (line.p1.y - c.y) == (c.x - line.p2.x) * (c.y - line.p2.y);
+  }
 }
 
 type Line = { p1: Geo; p2: Geo; md5?: string };
