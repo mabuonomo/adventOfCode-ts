@@ -1,8 +1,9 @@
 import { InitAbstract, Direction, Geo } from '../init.abstract';
 import { performanceLog } from 'decorators-utils-ts/dist/src';
 import { IntCode } from '../intcode';
+import deepEqual = require('deep-equal');
 
-type Line = { p1: Geo; p2: Geo; md5: string };
+type Line = { p1: Geo; p2: Geo; md5?: string };
 
 export class Day extends InitAbstract {
   runNewPart1(input: string[]) {
@@ -33,8 +34,31 @@ export class Day extends InitAbstract {
   }
 
   @performanceLog(true)
-  runPart1(): number {
-    return 0;
+  runPart1(): any {
+    let noCollisionMax = -Infinity;
+    let geoMax = undefined;
+    this.points.forEach((pointFirst) => {
+      let noCollision = 0;
+      this.points.forEach((pointSecond) => {
+        if (!deepEqual(pointFirst, pointSecond)) {
+          let line: Line = { p1: pointFirst, p2: pointSecond };
+          this.points.forEach((pointCheck) => {
+            if (!deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck)) {
+              if (!this.isPointOnLine(pointCheck, line)) {
+                noCollision++;
+              }
+            }
+          });
+        }
+      });
+
+      if (noCollisionMax < noCollision) {
+        noCollisionMax = noCollision;
+        geoMax = pointFirst;
+      }
+    });
+
+    return { point: geoMax, n: noCollisionMax };
   }
 
   @performanceLog(true)

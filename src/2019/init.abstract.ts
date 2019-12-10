@@ -68,4 +68,13 @@ export abstract class InitAbstract {
       y: from1.y + lambda * dY,
     };
   }
+
+  isPointOnLine(point: Geo, line: Line) {
+    return (
+      this.manhattanDistance2D(point, line.p1) + this.manhattanDistance2D(point, line.p2) ==
+      this.manhattanDistance2D(line.p1, line.p2)
+    );
+  }
 }
+
+type Line = { p1: Geo; p2: Geo; md5?: string };
