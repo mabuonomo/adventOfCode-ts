@@ -43,17 +43,20 @@ export class Day extends InitAbstract {
     this.points.forEach((pointFirst) => {
       let noCollision = 0;
 
+      // devo verificare che point2 non ha collisioni con altri punti
       this.points.forEach((pointSecond) => {
         if (!deepEqual(pointFirst, pointSecond)) {
           let line: Line = { p1: pointFirst, p2: pointSecond };
           let collide = false;
 
           this.points.forEach((pointCheck) => {
-            if (!deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck)) {
-              // console.log(pointFirst, pointSecond, pointCheck)
-              if (this.isPointOnLineV2(pointCheck, line)) {
-                collide = true;
-              }
+            if (
+              !deepEqual(pointFirst, pointCheck) &&
+              !deepEqual(pointSecond, pointCheck) &&
+              this.isPointOnLineV2(pointCheck, line)
+            ) {
+              collide = true;
+              // }
             }
           });
           if (!collide) {
@@ -62,20 +65,12 @@ export class Day extends InitAbstract {
         }
       });
 
-      if (noCollisionMax < noCollision) {
-        noCollisionMax = noCollision;
-        geoMax = pointFirst;
-        console.log('*', geoMax, noCollisionMax);
-      }
-      //       // angle in radians
-      // var angleRadians = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-
-      // // angle in degrees
-      // var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+      console.log('*', pointFirst, noCollision);
 
       // if (noCollisionMax < noCollision) {
       //   noCollisionMax = noCollision;
       //   geoMax = pointFirst;
+      //   console.log('*', geoMax, noCollisionMax);
       // }
     });
 
