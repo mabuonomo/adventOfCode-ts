@@ -45,9 +45,9 @@ export abstract class InitAbstract {
     ar.length === 1
       ? ar
       : ar.reduce((ac, _, i) => {
-          this.permutation([...ar.slice(0, i), ...ar.slice(i + 1)]).map((v) => ac.push([].concat(ar[i], v)));
-          return ac;
-        }, []);
+        this.permutation([...ar.slice(0, i), ...ar.slice(i + 1)]).map((v) => ac.push([].concat(ar[i], v)));
+        return ac;
+      }, []);
 
   intersection(from1: Geo, to1: Geo, from2: Geo, to2: Geo): Geo {
     const dX: number = to1.x - from1.x;
@@ -86,6 +86,17 @@ export abstract class InitAbstract {
     var BC = Math.sqrt(Math.pow(B.x - C.x, 2) + Math.pow(B.y - C.y, 2));
     var AC = Math.sqrt(Math.pow(C.x - A.x, 2) + Math.pow(C.y - A.y, 2));
     return Math.acos((BC * BC + AB * AB - AC * AC) / (2 * BC * AB));
+
+    // var p12 = Math.sqrt(Math.pow((A.x - B.x), 2) + Math.pow((A.y - B.y), 2));
+    // var p13 = Math.sqrt(Math.pow((A.x - C.x), 2) + Math.pow((A.y - C.y), 2));
+    // var p23 = Math.sqrt(Math.pow((B.x - C.x), 2) + Math.pow((B.y - C.y), 2));
+
+    // //angle in radians
+    // // var resultRadian = Math.acos(((Math.pow(p12, 2)) + (Math.pow(p13, 2)) - (Math.pow(p23, 2))) / (2 * p12 * p13));
+
+    // //angle in degrees
+    // var resultDegree = Math.acos(((Math.pow(p12, 2)) + (Math.pow(p13, 2)) - (Math.pow(p23, 2))) / (2 * p12 * p13)) * 180 / Math.PI;
+    // return resultDegree
   }
 }
 

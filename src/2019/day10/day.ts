@@ -81,7 +81,7 @@ export class Day extends InitAbstract {
 
       console.log('*', pointFirst, noCollision);
 
-      if (noCollisionMax < noCollision) {
+      if (noCollisionMax <= noCollision) {
         noCollisionMax = noCollision;
         geoMax = pointFirst;
         console.log('*', geoMax, noCollisionMax);
