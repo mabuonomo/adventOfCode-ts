@@ -77,12 +77,15 @@ export abstract class InitAbstract {
   }
 
   isPointOnLineV2(c: Geo, line: Line): boolean {
-    // if AC is vertical
-    if (line.p1.x == c.x) return line.p2.x == c.x;
-    // if AC is horizontal
-    if (line.p1.y == c.y) return line.p2.y == c.y;
-    // match the gradients
-    return (line.p1.x - c.x) * (line.p1.y - c.y) == (c.x - line.p2.x) * (c.y - line.p2.y);
+    // return this.find_angle(line.p1, line.p2, c) * 180 / Math.PI === 0
+    return this.find_angle(line.p1, line.p2, c) === 0;
+  }
+
+  find_angle(A: Geo, B: Geo, C: Geo) {
+    var AB = Math.sqrt(Math.pow(B.x - A.x, 2) + Math.pow(B.y - A.y, 2));
+    var BC = Math.sqrt(Math.pow(B.x - C.x, 2) + Math.pow(B.y - C.y, 2));
+    var AC = Math.sqrt(Math.pow(C.x - A.x, 2) + Math.pow(C.y - A.y, 2));
+    return Math.acos((BC * BC + AB * AB - AC * AC) / (2 * BC * AB));
   }
 }
 
