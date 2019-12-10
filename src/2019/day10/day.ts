@@ -38,10 +38,11 @@ export class Day extends InitAbstract {
     let noCollisionMax = -Infinity;
     let geoMax = undefined;
     this.points.forEach((pointFirst) => {
-      let noCollision = 0;
       this.points.forEach((pointSecond) => {
         if (!deepEqual(pointFirst, pointSecond)) {
           let line: Line = { p1: pointFirst, p2: pointSecond };
+
+          let noCollision = 0;
           this.points.forEach((pointCheck) => {
             if (!deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck)) {
               if (!this.isPointOnLine(pointCheck, line)) {
@@ -49,13 +50,18 @@ export class Day extends InitAbstract {
               }
             }
           });
+
+          if (noCollisionMax < noCollision) {
+            noCollisionMax = noCollision;
+            geoMax = pointFirst;
+          }
         }
       });
 
-      if (noCollisionMax < noCollision) {
-        noCollisionMax = noCollision;
-        geoMax = pointFirst;
-      }
+      // if (noCollisionMax < noCollision) {
+      //   noCollisionMax = noCollision;
+      //   geoMax = pointFirst;
+      // }
     });
 
     return { point: geoMax, n: noCollisionMax };
