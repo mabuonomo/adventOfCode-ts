@@ -21,16 +21,18 @@ export class Day extends InitAbstract {
 
     this.lines = this.getLines('day10', true);
 
-    let x = 0;
+    let y = 0;
     this.lines.forEach((line) => {
-      for (let y = 0; y < line.length; y++) {
-        if (line[y] == '#') {
+      for (let x = 0; x < line.length; x++) {
+        if (line[x] == '#') {
           let point = { x: x, y: y };
           this.points.push(point);
         }
       }
-      x++;
+      y++;
     });
+
+    // console.log(this.points)
   }
 
   @performanceLog(true)
@@ -39,10 +41,11 @@ export class Day extends InitAbstract {
     let geoMax = undefined;
     this.points.forEach((pointFirst) => {
       this.points.forEach((pointSecond) => {
+        let noCollision = 0;
+
         if (!deepEqual(pointFirst, pointSecond)) {
           let line: Line = { p1: pointFirst, p2: pointSecond };
 
-          let noCollision = 0;
           this.points.forEach((pointCheck) => {
             if (!deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck)) {
               if (!this.isPointOnLine(pointCheck, line)) {
