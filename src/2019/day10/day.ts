@@ -53,7 +53,10 @@ export class Day extends InitAbstract {
           this.points
             .filter((n) => !deepEqual(pointFirst, n) && !deepEqual(pointSecond, n))
             .forEach((pointCheck) => {
-              if (this.isPointOnLineV2(pointCheck, line)&& this.manhattanDistance2D(pointFirst, pointSecond)< this.manhattanDistance2D(pointCheck, pointFirst)) {
+              if (
+                this.isPointOnLineV2(pointCheck, line) &&
+                this.manhattanDistance2D(pointFirst, pointSecond) < this.manhattanDistance2D(pointCheck, pointFirst)
+              ) {
                 // console.log(
                 //   'collide',
                 //   'p1',
