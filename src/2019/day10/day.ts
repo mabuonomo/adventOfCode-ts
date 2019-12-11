@@ -19,7 +19,7 @@ export class Day extends InitAbstract {
   constructor() {
     super();
 
-    this.lines = this.getLines('day10', true);
+    this.lines = this.getLines('day10', false);
 
     let y = 0;
     this.lines.forEach((line) => {
@@ -78,7 +78,7 @@ export class Day extends InitAbstract {
           }
         });
 
-      console.log('*', pointFirst, noCollision);
+      // console.log('*', pointFirst, noCollision);
 
       if (noCollisionMax <= noCollision) {
         noCollisionMax = noCollision;
