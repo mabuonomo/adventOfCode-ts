@@ -44,40 +44,34 @@ export class Day extends InitAbstract {
       let noCollision = 0;
 
       // devo verificare che point2 non ha collisioni con altri punti
-      this.points.forEach((pointSecond) => {
-        if (!deepEqual(pointFirst, pointSecond)) {
+      this.points
+        .filter((n) => !deepEqual(pointFirst, n))
+        .forEach((pointSecond) => {
           let line: Line = { p1: pointFirst, p2: pointSecond };
           let collide = false;
 
-          this.points.forEach((pointCheck) => {
-            if (
-              !deepEqual(pointFirst, pointCheck) &&
-              !deepEqual(pointSecond, pointCheck) &&
-              this.isPointOnLineV2(pointCheck, line)
-            ) {
-              console.log(
-                'collide',
-                'p1',
-                pointFirst,
-                'p2',
-                pointSecond,
-                'pc',
-                pointCheck,
-                !deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck),
-                this.isPointOnLineV2(pointCheck, line),
-                'angle',
-                this.find_angle(line.p1, line.p2, pointCheck),
-              );
-              collide = true;
-            }
-          });
+          this.points
+            .filter((n) => !deepEqual(pointFirst, n) && !deepEqual(pointSecond, n))
+            .forEach((pointCheck) => {
+              if (this.isPointOnLineV2(pointCheck, line)) {
+                console.log(
+                  'collide',
+                  'p1',
+                  pointFirst,
+                  'p2',
+                  pointSecond,
+                  'pc',
+                  pointCheck,
+                  !deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck),
+                  this.isPointOnLineV2(pointCheck, line),
+                );
+                collide = true;
+              }
+            });
           if (!collide) {
             noCollision++;
           }
-        } else {
-          // console.log('eq', pointFirst, pointSecond)
-        }
-      });
+        });
 
       console.log('*', pointFirst, noCollision);
 
