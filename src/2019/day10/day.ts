@@ -53,18 +53,20 @@ export class Day extends InitAbstract {
           this.points
             .filter((n) => !deepEqual(pointFirst, n) && !deepEqual(pointSecond, n))
             .forEach((pointCheck) => {
-              if (this.isPointOnLineV2(pointCheck, line)) {
-                console.log(
-                  'collide',
-                  'p1',
-                  pointFirst,
-                  'p2',
-                  pointSecond,
-                  'pc',
-                  pointCheck,
-                  !deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck),
-                  this.isPointOnLineV2(pointCheck, line),
-                );
+              if (this.isPointOnLineV2(pointCheck, line)&& this.manhattanDistance2D(pointFirst, pointSecond)< this.manhattanDistance2D(pointCheck, pointFirst)) {
+                // console.log(
+                //   'collide',
+                //   'p1',
+                //   pointFirst,
+                //   'p2',
+                //   pointSecond,
+                //   'pc',
+                //   pointCheck,
+                //   !deepEqual(pointFirst, pointCheck) && !deepEqual(pointSecond, pointCheck),
+                //   this.isPointOnLineV2(pointCheck, line),
+                //   this.manhattanDistance2D(pointFirst, pointSecond),
+                //   this.manhattanDistance2D(pointCheck, pointFirst),
+                // );
                 collide = true;
               }
             });
@@ -78,7 +80,7 @@ export class Day extends InitAbstract {
       if (noCollisionMax <= noCollision) {
         noCollisionMax = noCollision;
         geoMax = pointFirst;
-        console.log('*', geoMax, noCollisionMax);
+        // console.log('**', geoMax, noCollisionMax);
       }
     });
 
