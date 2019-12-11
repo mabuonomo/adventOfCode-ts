@@ -41,6 +41,13 @@ export abstract class InitAbstract {
     return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); // + Math.abs(point1.z - point2.z);
   }
 
+  public dist(point1: Geo, point2: Geo) {
+    let a = Math.pow(Math.abs(point1.x - point2.x), 2);
+    let b = Math.pow(Math.abs(point1.y - point2.y), 2);
+
+    return Math.sqrt(a + b);
+  }
+
   permutation = (ar: number[]): number[][] =>
     ar.length === 1
       ? ar
@@ -78,7 +85,27 @@ export abstract class InitAbstract {
 
   isPointOnLineV2(c: Geo, line: Line): boolean {
     // return this.find_angle(line.p1, line.p2, c) * 180 / Math.PI === 0
-    return this.find_angle(line.p1, line.p2, c) === 0;
+    // return this.find_angle(line.p1, line.p2, c) === 0;
+
+    // get distance from the point to the two ends of the line
+    let d1 = this.dist(c, line.p1);
+    let d2 = this.dist(c, line.p2);
+
+    // get the length of the line
+    let lineLen = this.dist(line.p1, line.p2);
+
+    // since floats are so minutely accurate, add
+    // a little buffer zone that will give collision
+    let buffer = 0 //.1; // higher # = less accurate
+
+    // if the two distances are equal to the line's
+    // length, the point is on the line!
+    // note we use the buffer here to give a range,
+    // rather than one #
+    if (d1 + d2 >= lineLen - buffer && d1 + d2 <= lineLen + buffer) {
+      return true;
+    }
+    return false;
   }
 
   find_angle(A: Geo, B: Geo, C: Geo) {

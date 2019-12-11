@@ -32,7 +32,7 @@ export class Day extends InitAbstract {
       y++;
     });
 
-    console.log(this.points);
+    // console.log(this.points);
   }
 
   @performanceLog(true)
@@ -53,10 +53,7 @@ export class Day extends InitAbstract {
           this.points
             .filter((n) => !deepEqual(pointFirst, n) && !deepEqual(pointSecond, n))
             .forEach((pointCheck) => {
-              if (
-                this.isPointOnLineV2(pointCheck, line) &&
-                this.manhattanDistance2D(pointFirst, pointSecond) < this.manhattanDistance2D(pointCheck, pointFirst)
-              ) {
+              if (this.isPointOnLineV2(pointCheck, line)) {
                 // console.log(
                 //   'collide',
                 //   'p1',
@@ -80,10 +77,10 @@ export class Day extends InitAbstract {
 
       // console.log('*', pointFirst, noCollision);
 
-      if (noCollisionMax <= noCollision) {
+      if (noCollisionMax < noCollision) {
         noCollisionMax = noCollision;
         geoMax = pointFirst;
-        // console.log('**', geoMax, noCollisionMax);
+        console.log('**', geoMax, noCollisionMax);
       }
     });
 
