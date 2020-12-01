@@ -21,7 +21,7 @@ export class Day extends InitAbstract {
       this.paths.push(this.buildDirection(element));
     });
 
-    console.log(this.paths)
+    console.log(this.paths);
 
     this.matrix = this.initMatrix(this.maxH);
   }
@@ -33,7 +33,7 @@ export class Day extends InitAbstract {
   }
 
   @performanceLog(true)
-  runPart2(): any { }
+  runPart2(): any {}
 
   buildDirection(line: string): Array<Direction> {
     let command: Array<Direction> = [];
@@ -63,11 +63,10 @@ export class Day extends InitAbstract {
         if (matrix[i][j] == undefined) {
           matrix[i][j] = 0;
         }
-
       }
     }
 
-    console.log(matrix)
+    console.log(matrix);
     return matrix;
   }
 
@@ -77,7 +76,7 @@ export class Day extends InitAbstract {
     paths.forEach((path) => {
       let last = { x: 0, y: 0 };
       path.forEach((element) => {
-        console.log("Applico")
+        console.log('Applico');
         console.log(element);
         switch (element.direction) {
           case 'R':
@@ -122,10 +121,10 @@ export class Day extends InitAbstract {
             break;
         }
 
-        console.log(matrix)
+        console.log(matrix);
       });
 
-      console.log(points)
+      console.log(points);
       return points;
     });
   }

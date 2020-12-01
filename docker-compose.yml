@@ -1,8 +1,9 @@
-version: "3.2"
+version: '3.7'
+
 services:
   app:
     build:
       context: .docker
       dockerfile: DockerFile
     volumes:
-      - .:/app/
+      - ./:/app
