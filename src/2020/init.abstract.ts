@@ -6,7 +6,7 @@ export type Geo = { x: number; y: number; z?: number };
 export type Direction = { direction: string; value: number };
 
 export abstract class InitAbstract {
-  @performanceLog(true)
+  // @performanceLog(true)
   getLines(day: string, test: boolean = false): Array<string> {
     var data: Array<string> = [];
     let path = process.cwd() + '/src/2020/' + day + '/input.txt';
@@ -16,7 +16,7 @@ export abstract class InitAbstract {
     }
 
     if (fs.existsSync(path)) {
-      console.log('Input exists');
+      // console.log('Input exists');
     } else {
       console.log('Input not exists');
     }
