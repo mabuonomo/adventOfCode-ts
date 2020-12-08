@@ -76,6 +76,7 @@ class Day1 extends InitAbstract {
 
       if (this.findBag(leaf.node, findBag)) {
         almost = true;
+        break;
       }
     }
 
