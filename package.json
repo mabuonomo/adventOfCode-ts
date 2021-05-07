@@ -18,7 +18,7 @@
     "fs": "0.0.2",
     "jest-transform-stub": "^2.0.0",
     "line-reader": "^0.4.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "n-readlines": "^1.0.1",
     "react": "^16.14.0"
   },
